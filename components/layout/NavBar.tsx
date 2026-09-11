@@ -1,3 +1,4 @@
+import { FaBlogger } from "react-icons/fa";
 import Container from "./Container";
 import ThemeToggle from "./ThemeToggle";
 
@@ -7,8 +8,8 @@ const NavBar = () => {
       <Container>
         <div className="flex justify-between items-center gap-8">
           <div className="flex items-center gap-1 cursor-pointer">
-            <div>Icon</div>
-            <div>Derins Blog Spot</div>
+            <FaBlogger size={24} />
+            <div className="font-bold text-xl">DerinSpot.blog</div>
           </div>
           <div>Search</div>
           <div className="flex gap-5 sm:gap-8 items-center">
