@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
-import { Roboto } from "next/font/google";
+import { Roboto, Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import NavBar from "@/components/layout/NavBar";
 import { ThemeProvider } from "next-themes";
+
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -23,7 +25,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={cn("font-sans", inter.variable)}
+    >
       <body
         className={cn(
           "antialiased flex flex-col min-h-screen px-2",

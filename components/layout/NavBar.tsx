@@ -1,6 +1,7 @@
 import { FaBlogger } from "react-icons/fa";
 import Container from "./Container";
 import ThemeToggle from "./ThemeToggle";
+import SearchInput from "./SearchInput";
 
 const NavBar = () => {
   return (
@@ -11,7 +12,7 @@ const NavBar = () => {
             <FaBlogger size={24} />
             <div className="font-bold text-xl">DerinSpot.blog</div>
           </div>
-          <div>Search</div>
+          <SearchInput />
           <div className="flex gap-5 sm:gap-8 items-center">
             <ThemeToggle />
             <div>Notifications</div>
