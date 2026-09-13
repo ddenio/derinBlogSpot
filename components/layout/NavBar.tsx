@@ -3,6 +3,7 @@ import Container from "./Container";
 import ThemeToggle from "./ThemeToggle";
 import SearchInput from "./SearchInput";
 import Notifications from "./Notifications";
+import UserButton from "./UserButton";
 
 const NavBar = () => {
   return (
@@ -17,7 +18,7 @@ const NavBar = () => {
           <div className="flex gap-5 sm:gap-8 items-center">
             <ThemeToggle />
             <Notifications />
-            <div>UserMenu</div>
+            <UserButton />
           </div>
         </div>
       </Container>
