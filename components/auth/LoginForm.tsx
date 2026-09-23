@@ -7,6 +7,7 @@ import FormField from "../common/FormField";
 
 import Heading from "../common/Heading";
 import Button from "../common/Button";
+import SocialAuth from "./SocialAuth";
 
 const LoginForm = () => {
   const {
@@ -41,6 +42,8 @@ const LoginForm = () => {
       />
 
       <Button type="submit" label="Login" />
+      <div className="flex justify-center my-2">Or</div>
+      <SocialAuth />
     </form>
   );
 };
