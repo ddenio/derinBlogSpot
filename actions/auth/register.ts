@@ -30,4 +30,6 @@ export const signUp = async (values: RegisterSchemaType) => {
       password: hashedPassword,
     },
   });
+
+  return { success: "User Created!" };
 };
