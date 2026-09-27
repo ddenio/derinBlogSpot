@@ -8,8 +8,14 @@ import Heading from "../common/Heading";
 import Button from "../common/Button";
 import SocialAuth from "./SocialAuth";
 import { RegisterSchema, RegisterSchemaType } from "@/schemas/RegisterSchema";
+import { signUp } from "@/actions/auth/register";
+import { useState, useTransition } from "react";
 
 const RegisterForm = () => {
+  const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState<string | undefined>("");
+  const [success, setSuccess] = useState<string | undefined>("");
+
   const {
     register,
     handleSubmit,
@@ -17,7 +23,14 @@ const RegisterForm = () => {
   } = useForm<RegisterSchemaType>({ resolver: zodResolver(RegisterSchema) });
 
   const onSubmit: SubmitHandler<RegisterSchemaType> = (data) => {
-    console.log("data>>>", data);
+    setSuccess("");
+    setError("");
+    startTransition(() => {
+      signUp(data).then((res) => {
+        setError(res.error);
+        setSuccess(res.success);
+      });
+    });
   };
 
   return (
@@ -31,6 +44,7 @@ const RegisterForm = () => {
         register={register}
         errors={errors}
         placeholder="name"
+        disabled={isPending}
       />
 
       <FormField
@@ -38,6 +52,7 @@ const RegisterForm = () => {
         register={register}
         errors={errors}
         placeholder="email"
+        disabled={isPending}
       />
 
       <FormField
@@ -46,6 +61,7 @@ const RegisterForm = () => {
         errors={errors}
         placeholder="password"
         type="password"
+        disabled={isPending}
       />
 
       <FormField
@@ -54,9 +70,17 @@ const RegisterForm = () => {
         errors={errors}
         placeholder="confirm password"
         type="password"
+        disabled={isPending}
       />
-
-      <Button type="submit" label="Register" />
+      <div>
+        {error}
+        {success}
+      </div>
+      <Button
+        type="submit"
+        label={isPending ? "Submitting..." : "Register"}
+        disabled={isPending}
+      />
       <div className="flex justify-center my-2">Or</div>
       <SocialAuth />
     </form>
