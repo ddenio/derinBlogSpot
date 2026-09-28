@@ -8,8 +8,13 @@ import FormField from "../common/FormField";
 import Heading from "../common/Heading";
 import Button from "../common/Button";
 import SocialAuth from "./SocialAuth";
+import { useState, useTransition } from "react";
+import { login } from "@/actions/auth/login";
+import Alert from "../common/Alert";
 
 const LoginForm = () => {
+  const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState<string | undefined>("");
   const {
     register,
     handleSubmit,
@@ -17,7 +22,14 @@ const LoginForm = () => {
   } = useForm<LoginSchemaType>({ resolver: zodResolver(LoginSchema) });
 
   const onSubmit: SubmitHandler<LoginSchemaType> = (data) => {
-    console.log("data>>>", data);
+    setError("");
+    startTransition(() => {
+      login(data).then((res) => {
+        if (res?.error) {
+          setError(res.error);
+        }
+      });
+    });
   };
 
   return (
@@ -31,6 +43,7 @@ const LoginForm = () => {
         register={register}
         errors={errors}
         placeholder="email"
+        disabled={isPending}
       />
 
       <FormField
@@ -39,9 +52,14 @@ const LoginForm = () => {
         errors={errors}
         placeholder="password"
         type="password"
+        disabled={isPending}
       />
-
-      <Button type="submit" label="Login" />
+      {error && <Alert message={error} error />}
+      <Button
+        type="submit"
+        label={isPending ? "Submitting..." : "Login"}
+        disabled={isPending}
+      />
       <div className="flex justify-center my-2">Or</div>
       <SocialAuth />
     </form>
