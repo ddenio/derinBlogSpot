@@ -11,6 +11,8 @@ import SocialAuth from "./SocialAuth";
 import { useState, useTransition } from "react";
 import { login } from "@/actions/auth/login";
 import Alert from "../common/Alert";
+import { useRouter } from "next/navigation";
+import { LOGIN_REDIRECT } from "@/routes";
 
 const LoginForm = () => {
   const [isPending, startTransition] = useTransition();
@@ -21,12 +23,17 @@ const LoginForm = () => {
     formState: { errors },
   } = useForm<LoginSchemaType>({ resolver: zodResolver(LoginSchema) });
 
+  const router = useRouter();
+
   const onSubmit: SubmitHandler<LoginSchemaType> = (data) => {
     setError("");
     startTransition(() => {
       login(data).then((res) => {
         if (res?.error) {
           setError(res.error);
+        }
+        if (!res?.error) {
+          router.push(LOGIN_REDIRECT);
         }
       });
     });
