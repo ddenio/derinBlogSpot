@@ -10,6 +10,7 @@ const SocialAuth = () => {
         outlined
         icon={FaGithub}
         onClick={() => {}}
+        className="flex-1"
       />
       <Button
         type="button"
@@ -17,6 +18,7 @@ const SocialAuth = () => {
         outlined
         icon={FaGoogle}
         onClick={() => {}}
+        className="flex-1"
       />
     </div>
   );

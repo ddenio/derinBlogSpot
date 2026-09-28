@@ -2,7 +2,6 @@
 
 import { signIn } from "@/auth";
 import { getUserByEmail } from "@/lib/user";
-import { LOGIN_REDIRECT } from "@/routes";
 import { LoginSchema, LoginSchemaType } from "@/schemas/LoginSchema";
 import { AuthError } from "next-auth";
 
@@ -29,7 +28,7 @@ export const login = async (values: LoginSchemaType) => {
     await signIn("credentials", {
       email,
       password,
-      redirectTo: LOGIN_REDIRECT,
+      redirect: false,
     });
   } catch (error) {
     if (error instanceof AuthError) {
@@ -40,5 +39,8 @@ export const login = async (values: LoginSchemaType) => {
           return { error: "Something went wrong!" };
       }
     }
+    throw error;
   }
+
+  return { success: true };
 };

@@ -12,6 +12,7 @@ import { useState, useTransition } from "react";
 import { login } from "@/actions/auth/login";
 import Alert from "../common/Alert";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { LOGIN_REDIRECT } from "@/routes";
 
 const LoginForm = () => {
@@ -24,15 +25,17 @@ const LoginForm = () => {
   } = useForm<LoginSchemaType>({ resolver: zodResolver(LoginSchema) });
 
   const router = useRouter();
+  const { update } = useSession();
 
   const onSubmit: SubmitHandler<LoginSchemaType> = (data) => {
     setError("");
     startTransition(() => {
-      login(data).then((res) => {
+      login(data).then(async (res) => {
         if (res?.error) {
           setError(res.error);
         }
         if (!res?.error) {
+          await update();
           router.push(LOGIN_REDIRECT);
         }
       });
