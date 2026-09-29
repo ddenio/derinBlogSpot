@@ -26,11 +26,10 @@ const RegisterForm = () => {
   const onSubmit: SubmitHandler<RegisterSchemaType> = (data) => {
     setSuccess("");
     setError("");
-    startTransition(() => {
-      signUp(data).then((res) => {
-        setError(res.error);
-        setSuccess(res.success);
-      });
+    startTransition(async () => {
+      const res = await signUp(data);
+      setError(res.error);
+      setSuccess(res.success);
     });
   };
 
