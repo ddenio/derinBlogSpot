@@ -17,21 +17,19 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       async authorize(credentials) {
         const validatedFields = LoginSchema.safeParse(credentials);
 
-        if (validatedFields.success) {
-          const { email, password } = validatedFields.data;
-
-          const user = await getUserByEmail(email);
-
-          if (!user || !user.password) return null;
-
-          const isCorrectPassword = await bcrypt.compare(
-            password,
-            user.password,
-          );
-
-          if (isCorrectPassword) return user;
+        if (!validatedFields.success) {
+          return null;
         }
 
+        const { email, password } = validatedFields.data;
+
+        const user = await getUserByEmail(email);
+
+        if (!user || !user.password) return null;
+
+        const isCorrectPassword = await bcrypt.compare(password, user.password);
+
+        if (isCorrectPassword) return user;
         return null;
       },
     }),

@@ -29,8 +29,9 @@ const LoginForm = () => {
 
   const onSubmit: SubmitHandler<LoginSchemaType> = (data) => {
     setError("");
-    startTransition(() => {
-      login(data).then(async (res) => {
+    startTransition(async () => {
+      try {
+        const res = await login(data);
         if (res?.error) {
           setError(res.error);
         }
@@ -38,7 +39,9 @@ const LoginForm = () => {
           await update();
           router.push(LOGIN_REDIRECT);
         }
-      });
+      } catch (error) {
+        console.error(error);
+      }
     });
   };
 
