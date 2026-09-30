@@ -11,11 +11,12 @@ import SocialAuth from "./SocialAuth";
 import { useState, useTransition } from "react";
 import { login } from "@/actions/auth/login";
 import Alert from "../common/Alert";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { LOGIN_REDIRECT } from "@/routes";
 
 const LoginForm = () => {
+  const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | undefined>("");
   const {
@@ -27,12 +28,18 @@ const LoginForm = () => {
   const router = useRouter();
   const { update } = useSession();
 
+  const urlError =
+    searchParams.get("error") === "OAuthAccountNotLinked"
+      ? "Email address already in use!"
+      : "";
+
   const onSubmit: SubmitHandler<LoginSchemaType> = (data) => {
     setError("");
     startTransition(async () => {
       try {
         const res = await login(data);
         if (res?.error) {
+          router.replace("/login");
           setError(res.error);
         }
         if (!res?.error) {
@@ -68,6 +75,7 @@ const LoginForm = () => {
         disabled={isPending}
       />
       {error && <Alert message={error} error />}
+
       <Button
         type="submit"
         label={isPending ? "Submitting..." : "Login"}
@@ -75,6 +83,7 @@ const LoginForm = () => {
       />
       <div className="flex justify-center my-2">Or</div>
       <SocialAuth />
+      {urlError && <Alert message={urlError} error />}
     </form>
   );
 };
