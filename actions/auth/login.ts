@@ -1,6 +1,10 @@
 "use server";
 
 import { signIn } from "@/auth";
+import {
+  generateEmailVerificationToken,
+  sendEmailVerificationToken,
+} from "@/lib/emailVerification";
 import { getUserByEmail } from "@/lib/user";
 import { LoginSchema, LoginSchemaType } from "@/schemas/LoginSchema";
 import { AuthError } from "next-auth";
@@ -20,9 +24,26 @@ export const login = async (values: LoginSchemaType) => {
     return { error: "Invalid Credentials" };
   }
 
-  //   if (!user.emailVerified) {
-  //     return { error: "Email not verified" };
-  //   }
+  if (!user.emailVerified) {
+    const emailVerificationToken = await generateEmailVerificationToken(
+      user.email,
+    );
+    const { error } = await sendEmailVerificationToken(
+      emailVerificationToken.email,
+      emailVerificationToken.token,
+    );
+
+    if (error) {
+      return {
+        error:
+          "Something went wrong while sending verification email! Try to login to resend the verification email!",
+      };
+    }
+
+    return {
+      success: "Verification email sent! (Check Spam Folder!)",
+    };
+  }
 
   try {
     await signIn("credentials", {
@@ -42,5 +63,5 @@ export const login = async (values: LoginSchemaType) => {
     throw error;
   }
 
-  return { success: true };
+  return { success: "Logged in successfully!" };
 };

@@ -11,11 +11,13 @@ import { RegisterSchema, RegisterSchemaType } from "@/schemas/RegisterSchema";
 import { signUp } from "@/actions/auth/register";
 import { useState, useTransition } from "react";
 import Alert from "../common/Alert";
+import { useRouter } from "next/navigation";
 
 const RegisterForm = () => {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
+  const router = useRouter();
 
   const {
     register,
@@ -32,6 +34,24 @@ const RegisterForm = () => {
       setSuccess(res.success);
     });
   };
+
+  if (success) {
+    return (
+      <div className="flex flex-col max-w-125 m-auto mt-8 gap-2 text-center">
+        <Heading title="Check Your Email" lg center />
+        <Alert message={success} success />
+        <p className="text-slate-600 dark:text-slate-300">
+          We sent a verification link to your email address. Click the link
+          to verify your account, then log in below.
+        </p>
+        <Button
+          type="button"
+          label="Back to Login"
+          onClick={() => router.push("/login")}
+        />
+      </div>
+    );
+  }
 
   return (
     <form
