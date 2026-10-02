@@ -6,6 +6,7 @@ import NavBar from "@/components/layout/NavBar";
 import { ThemeProvider } from "next-themes";
 import { auth } from "@/auth";
 import { SessionProvider } from "next-auth/react";
+import { EdgeStoreProvider } from "@/lib/edgestore";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -29,31 +30,33 @@ export default async function RootLayout({
   const session = await auth();
 
   return (
-    <SessionProvider session={session}>
-      <html
-        lang="en"
-        suppressHydrationWarning
-        className={cn("font-sans", inter.variable)}
-      >
-        <body
-          className={cn(
-            "antialiased flex flex-col min-h-screen px-2",
-            roboto.variable,
-          )}
+    <EdgeStoreProvider>
+      <SessionProvider session={session}>
+        <html
+          lang="en"
+          suppressHydrationWarning
+          className={cn("font-sans", inter.variable)}
         >
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
+          <body
+            className={cn(
+              "antialiased flex flex-col min-h-screen px-2",
+              roboto.variable,
+            )}
           >
-            <NavBar />
-            <main className="flex-grow">{children}</main>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <NavBar />
+              <main className="flex-grow">{children}</main>
 
-            <footer>...</footer>
-          </ThemeProvider>
-        </body>
-      </html>
-    </SessionProvider>
+              <footer>...</footer>
+            </ThemeProvider>
+          </body>
+        </html>
+      </SessionProvider>
+    </EdgeStoreProvider>
   );
 }
