@@ -14,6 +14,7 @@ import Alert from "../common/Alert";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { LOGIN_REDIRECT } from "@/routes";
+import Link from "next/link";
 
 const LoginForm = () => {
   const searchParams = useSearchParams();
@@ -88,6 +89,14 @@ const LoginForm = () => {
       <div className="flex justify-center my-2">Or</div>
       <SocialAuth />
       {urlError && <Alert message={urlError} error />}
+      <div className="flex items-end justify-end">
+        <Link
+          className="mt-2 text-sm underline text-slate-700 dark:text-slate-300"
+          href="/password-email-form"
+        >
+          Forgot Password?
+        </Link>
+      </div>
     </form>
   );
 };
