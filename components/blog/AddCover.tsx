@@ -79,7 +79,13 @@ const AddCover = ({
         )}
       >
         <ImageIcon size={16} />
-        <span>{!!replaceUrl ? "Change Cover Image" : "Add Cover Image"}</span>
+        <span className={cn(isUploading && "text-green-500")}>
+          {isUploading
+            ? "Uploading..."
+            : !!replaceUrl
+            ? "Change Cover Image"
+            : "Add Cover Image"}
+        </span>
       </button>
     </div>
   );
