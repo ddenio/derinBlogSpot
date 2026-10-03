@@ -1,6 +1,7 @@
 "use client";
 
 import { useEdgeStore } from "@/lib/edgestore";
+import { cn } from "@/lib/utils";
 import { ImageIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
@@ -8,12 +9,14 @@ interface AddCoverProps {
   setUploadedCover: (cover: string) => void;
   replaceUrl?: string;
   onUploadingChange?: (uploading: boolean) => void;
+  variant?: "overlay" | "standalone";
 }
 
 const AddCover = ({
   setUploadedCover,
   replaceUrl,
   onUploadingChange,
+  variant = "overlay",
 }: AddCoverProps) => {
   const imgInputRef = useRef<HTMLInputElement | null>(null);
   const [file, setFile] = useState<File | null>(null);
@@ -68,7 +71,12 @@ const AddCover = ({
         type="button"
         onClick={handleButtonClick}
         disabled={isUploading}
-        className="flex items-center gap-2 rounded-md bg-black/60 text-white px-3 py-1.5 text-sm font-medium backdrop-blur-sm hover:bg-black/80 transition-colors"
+        className={cn(
+          "flex items-center gap-2 rounded-md text-sm font-medium transition-colors disabled:pointer-events-none disabled:opacity-50",
+          variant === "standalone"
+            ? "w-full justify-center border border-dashed border-border bg-background px-4 py-6 text-foreground hover:bg-muted dark:border-input dark:bg-input/30 dark:hover:bg-input/50"
+            : "bg-black/60 px-3 py-1.5 text-white backdrop-blur-sm hover:bg-black/80"
+        )}
       >
         <ImageIcon size={16} />
         <span>{!!replaceUrl ? "Change Cover Image" : "Add Cover Image"}</span>

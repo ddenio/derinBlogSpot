@@ -31,7 +31,7 @@ const CreateBlogForm = () => {
   });
   return (
     <form className="flex flex-col justify-between max-w-300 m-auto min-h-[85vh]">
-      <div>
+      <div className="mt-8">
         {!!uploadedCover && (
           <CoverImage
             url={uploadedCover}
@@ -39,7 +39,9 @@ const CreateBlogForm = () => {
             setUploadedCover={setUploadedCover}
           />
         )}
-        {!uploadedCover && <AddCover setUploadedCover={setUploadedCover} />}
+        {!uploadedCover && (
+          <AddCover setUploadedCover={setUploadedCover} variant="standalone" />
+        )}
 
         <FormField
           id="title"
