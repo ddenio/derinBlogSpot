@@ -19,7 +19,7 @@ const roboto = Roboto({
 export const metadata: Metadata = {
   title: "Derin's Blog Spot",
   description: "Your favorite Web Dev Blogs!",
-  icons: { icon: "/logo.svg" },
+  icons: { icon: "/icon.svg" },
 };
 
 export default async function RootLayout({
