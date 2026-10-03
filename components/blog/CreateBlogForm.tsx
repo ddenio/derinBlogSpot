@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import FormField from "../common/FormField";
 import AddCover from "./AddCover";
 import { useState } from "react";
+import CoverImage from "./CoverImage";
 
 const CreateBlogForm = () => {
   const session = useSession();
@@ -31,7 +32,15 @@ const CreateBlogForm = () => {
   return (
     <form className="flex flex-col justify-between max-w-300 m-auto min-h-[85vh]">
       <div>
-        <AddCover setUploadedCover={setUploadedCover} />
+        {!!uploadedCover && (
+          <CoverImage
+            url={uploadedCover}
+            isEditor={true}
+            setUploadedCover={setUploadedCover}
+          />
+        )}
+        {!uploadedCover && <AddCover setUploadedCover={setUploadedCover} />}
+
         <FormField
           id="title"
           register={register}

@@ -7,9 +7,14 @@ import { useEffect, useRef, useState } from "react";
 interface AddCoverProps {
   setUploadedCover: (cover: string) => void;
   replaceUrl?: string;
+  onUploadingChange?: (uploading: boolean) => void;
 }
 
-const AddCover = ({ setUploadedCover, replaceUrl }: AddCoverProps) => {
+const AddCover = ({
+  setUploadedCover,
+  replaceUrl,
+  onUploadingChange,
+}: AddCoverProps) => {
   const imgInputRef = useRef<HTMLInputElement | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -23,6 +28,7 @@ const AddCover = ({ setUploadedCover, replaceUrl }: AddCoverProps) => {
     const uploadImage = async () => {
       if (!file) return;
       setIsUploading(true);
+      onUploadingChange?.(true);
       try {
         const res = await edgestore.publicFiles.upload({
           file,
@@ -37,6 +43,7 @@ const AddCover = ({ setUploadedCover, replaceUrl }: AddCoverProps) => {
       } finally {
         if (isMounted) {
           setIsUploading(false);
+          onUploadingChange?.(false);
         }
       }
     };
@@ -46,7 +53,7 @@ const AddCover = ({ setUploadedCover, replaceUrl }: AddCoverProps) => {
     return () => {
       isMounted = false;
     };
-  }, [file, edgestore, replaceUrl, setUploadedCover]);
+  }, [file]);
 
   return (
     <div>
@@ -60,12 +67,12 @@ const AddCover = ({ setUploadedCover, replaceUrl }: AddCoverProps) => {
       <button
         type="button"
         onClick={handleButtonClick}
-        className="flex items-center gap-2"
+        disabled={isUploading}
+        className="flex items-center gap-2 rounded-md bg-black/60 text-white px-3 py-1.5 text-sm font-medium backdrop-blur-sm hover:bg-black/80 transition-colors"
       >
-        <ImageIcon size={20} />
+        <ImageIcon size={16} />
         <span>{!!replaceUrl ? "Change Cover Image" : "Add Cover Image"}</span>
       </button>
-      {isUploading && <p className="text-green-500">Uploading...</p>}
     </div>
   );
 };
