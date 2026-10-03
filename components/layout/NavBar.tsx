@@ -13,8 +13,6 @@ const NavBar = () => {
   const session = useSession();
   const isLoggedIn = session.status === "authenticated";
 
-  console.log("session>>>>>", session);
-
   return (
     <nav className="sticky top-0 border-b z-50 bg-background">
       <Container>
