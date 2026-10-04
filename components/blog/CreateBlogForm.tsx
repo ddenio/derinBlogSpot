@@ -9,6 +9,7 @@ import FormField from "../common/FormField";
 import AddCover from "./AddCover";
 import { useState } from "react";
 import CoverImage from "./CoverImage";
+import { tags } from "@/lib/tags";
 
 const CreateBlogForm = () => {
   const session = useSession();
@@ -51,6 +52,27 @@ const CreateBlogForm = () => {
           disabled={false}
           inputClassNames="border-none text-5xl font-bold bg-transparent px-0"
         />
+
+        <fieldset className="flex flex-col border-y mb-4 py-2">
+          <legend className="mb-2 pr-2">Select up to 4 Tags</legend>
+          <div className="flex gap-4 flex-wrap w-full max-h-48 overflow-y-auto pr-2">
+            {tags.map((tag) => {
+              if (tag === "All") return null;
+
+              return (
+                <label key={tag} className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    value={tag}
+                    {...register("tags")}
+                    disabled={false}
+                  />
+                  <span>{tag}</span>
+                </label>
+              );
+            })}
+          </div>
+        </fieldset>
       </div>
     </form>
   );
