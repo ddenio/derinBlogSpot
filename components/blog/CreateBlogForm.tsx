@@ -43,7 +43,7 @@ const CreateBlogForm = () => {
 
   return (
     <form className="flex flex-col justify-between max-w-300 m-auto min-h-[85vh]">
-      <div className="mt-8">
+      <div className="mt-8 flex flex-col gap-6">
         {!!uploadedCover && (
           <CoverImage
             url={uploadedCover}
@@ -64,27 +64,36 @@ const CreateBlogForm = () => {
           inputClassNames="border-none text-5xl font-bold bg-transparent px-0"
         />
 
-        <fieldset className="flex flex-col border-y mb-4 py-2">
-          <legend className="mb-2 pr-2">Select up to 4 Tags</legend>
-          <div className="flex gap-4 flex-wrap w-full max-h-48 overflow-y-auto pr-2">
+        <fieldset className="flex flex-col gap-3">
+          <legend className="mb-3 text-sm font-medium text-muted-foreground">
+            Select up to 4 tags
+          </legend>
+          <div className="flex flex-wrap gap-2">
             {tags.map((tag) => {
               if (tag === "All") return null;
 
               return (
-                <label key={tag} className="flex items-center space-x-2">
+                <label key={tag} className="cursor-pointer">
                   <input
                     type="checkbox"
                     value={tag}
                     {...register("tags")}
-                    disabled={false}
+                    className="peer sr-only"
                   />
-                  <span>{tag}</span>
+                  <span
+                    className="inline-block rounded-full border px-3 py-1 text-sm transition-colors
+            hover:bg-muted
+            peer-checked:bg-primary peer-checked:text-primary-foreground peer-checked:border-primary
+            peer-focus-visible:ring-2 peer-focus-visible:ring-ring"
+                  >
+                    {tag}
+                  </span>
                 </label>
               );
             })}
           </div>
         </fieldset>
-        <BlockNoteEditor />
+        <BlockNoteEditor onChange={onChange} />
       </div>
     </form>
   );

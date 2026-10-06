@@ -1,11 +1,24 @@
 "use client";
 
 import "@blocknote/core/fonts/inter.css";
-import { PartialBlock } from "@blocknote/core";
+import {
+  BlockNoteSchema,
+  createCodeBlockSpec,
+  defaultBlockSpecs,
+  PartialBlock,
+} from "@blocknote/core";
+import { codeBlockOptions, syntaxHighlighter } from "@blocknote/code-block";
 import { useCreateBlockNote } from "@blocknote/react";
 import { BlockNoteView } from "@blocknote/mantine";
 import "@blocknote/mantine/style.css";
 import { useTheme } from "next-themes";
+
+const schema = BlockNoteSchema.create({
+  blockSpecs: {
+    ...defaultBlockSpecs,
+    codeBlock: createCodeBlockSpec(codeBlockOptions),
+  },
+});
 
 interface BlockNoteEditorProps {
   onChange?: (value: string) => void;
@@ -20,6 +33,8 @@ const BlockNoteEditor = ({
 }: BlockNoteEditorProps) => {
   const { resolvedTheme } = useTheme();
   const editor = useCreateBlockNote({
+    schema,
+    extensions: [syntaxHighlighter],
     initialContent: initialContent
       ? (JSON.parse(initialContent) as PartialBlock[])
       : undefined,
@@ -30,6 +45,14 @@ const BlockNoteEditor = ({
       editor={editor}
       theme={resolvedTheme === "dark" ? "dark" : "light"}
       className="rounded-md border border-border"
+      onChange={
+        onChange
+          ? () => {
+              onChange(JSON.stringify(editor.document));
+            }
+          : () => {}
+      }
+      editable={editable}
     />
   );
 };
