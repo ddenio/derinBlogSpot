@@ -181,9 +181,6 @@ const CreateBlogForm = () => {
           {success && <Alert message={success} success />}
           {error && <Alert message={error} error />}
           <div className="flex items-center justify-between gap-6">
-            <div>
-              <Button type="button" label="Delete" />
-            </div>
             <div className="flex gap-4">
               <Button
                 type="submit"
@@ -195,6 +192,9 @@ const CreateBlogForm = () => {
                 label={isSavingAsDraft ? "Saving..." : "Save as Draft"}
                 onClick={handleSubmit(onSaveDraft)}
               />
+            </div>
+            <div>
+              <Button type="button" label="Delete" className="bg-rose-400" />
             </div>
           </div>
         </div>
