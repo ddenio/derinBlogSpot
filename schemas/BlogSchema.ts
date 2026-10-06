@@ -4,8 +4,8 @@ export const BlogSchema = z.object({
   userId: z.string(),
   title: z
     .string()
-    .min(10, { message: "title is too short" })
-    .max(150, { message: "title is too long, max 150 characters" }),
+    .min(10, { message: "Title is too short" })
+    .max(150, { message: "Title is too long, max 150 characters" }),
   content: z.string().min(10, { message: "content is too short" }),
   coverImage: z.string().optional(),
   isPublished: z.boolean(),

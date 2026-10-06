@@ -4,13 +4,16 @@ import { BlogSchema, BlogSchemaType } from "@/schemas/BlogSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSession } from "next-auth/react";
 
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import FormField from "../common/FormField";
 import AddCover from "./AddCover";
-import { useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import dynamic from "next/dynamic";
 import CoverImage from "./CoverImage";
 import { tags } from "@/lib/tags";
+import Button from "../common/Button";
+import Alert from "../common/Alert";
+import { createBlog } from "@/actions/blogs/create-blog";
 
 const BlockNoteEditor = dynamic(() => import("./editor/BlockNoteEditor"), {
   ssr: false,
@@ -21,6 +24,9 @@ const CreateBlogForm = () => {
   const userId = session.data?.user.userId;
   const [uploadedCover, setUploadedCover] = useState<string>();
   const [content, setContent] = useState<string | undefined>();
+  const [success, setSuccess] = useState<string | undefined>();
+  const [error, setError] = useState<string | undefined>();
+  const [isPublishing, startPublishing] = useTransition();
 
   console.log(uploadedCover);
 
@@ -37,12 +43,58 @@ const CreateBlogForm = () => {
     },
   });
 
+  useEffect(() => {
+    if (uploadedCover) {
+      setValue("coverImage", uploadedCover, {
+        shouldValidate: true,
+        shouldDirty: true,
+        shouldTouch: true,
+      });
+    }
+  }, [uploadedCover]);
+
+  useEffect(() => {
+    if (typeof content === "string") {
+      setValue("content", content, {
+        shouldValidate: true,
+        shouldDirty: true,
+        shouldTouch: true,
+      });
+    }
+  }, [content]);
+
   const onChange = (content: string) => {
     setContent(content);
   };
 
+  const onPublish: SubmitHandler<BlogSchemaType> = (data) => {
+    console.log("data", data);
+    setSuccess("");
+    setError("");
+
+    if (data.tags.length > 4) {
+      return setError("Select a max of 4 tags!");
+    }
+
+    startPublishing(async () => {
+      try {
+        const res = await createBlog({ ...data, isPublished: true });
+
+        if (res.error) setError(res.error);
+        if (res.success) setSuccess(res.success);
+      } catch {
+        setError("Something went wrong. Please try again.");
+      }
+    });
+  };
+
+  console.log("errors >>>", errors);
+
   return (
-    <form className="flex flex-col justify-between max-w-300 m-auto min-h-[85vh]">
+    <form
+      onSubmit={handleSubmit(onPublish)}
+      className="flex flex-col justify-between max-w-300 m-auto min-h-[85vh]"
+    >
       <div className="mt-8 flex flex-col gap-6">
         {!!uploadedCover && (
           <CoverImage
@@ -92,8 +144,40 @@ const CreateBlogForm = () => {
               );
             })}
           </div>
+          {errors.tags && errors.tags.message && (
+            <span className="text-sm text-rose-400">
+              Select at least one tag, max of 4!
+            </span>
+          )}
         </fieldset>
         <BlockNoteEditor onChange={onChange} />
+        {errors.content && errors.content.message && (
+          <span className="text-sm text-rose-400">
+            {errors.content.message}
+          </span>
+        )}
+      </div>
+      <div>
+        <div className="border-t pt-2">
+          {errors.userId && errors.userId.message && (
+            <span className="text-sm text-rose-400">Missing a User Id</span>
+          )}
+          {success && <Alert message={success} success />}
+          {error && <Alert message={error} error />}
+          <div className="flex items-center justify-between gap-6">
+            <div>
+              <Button type="button" label="Delete" />
+            </div>
+            <div className="flex gap-4">
+              <Button
+                type="submit"
+                label={isPublishing ? "Publishing..." : "Publish"}
+                className="bg-blue-700"
+              />
+              <Button type="button" label="Save as Draft" />
+            </div>
+          </div>
+        </div>
       </div>
     </form>
   );
