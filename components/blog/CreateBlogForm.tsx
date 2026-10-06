@@ -27,6 +27,7 @@ const CreateBlogForm = () => {
   const [success, setSuccess] = useState<string | undefined>();
   const [error, setError] = useState<string | undefined>();
   const [isPublishing, startPublishing] = useTransition();
+  const [isSavingAsDraft, startSavingAsDraft] = useTransition();
 
   console.log(uploadedCover);
 
@@ -67,8 +68,23 @@ const CreateBlogForm = () => {
     setContent(content);
   };
 
+  const onSaveDraft: SubmitHandler<BlogSchemaType> = (data) => {
+    setSuccess("");
+    setError("");
+
+    startSavingAsDraft(async () => {
+      try {
+        const res = await createBlog({ ...data, isPublished: false });
+
+        if (res.error) setError(res.error);
+        if (res.success) setSuccess(res.success);
+      } catch {
+        setError("Something went wrong. Please try again.");
+      }
+    });
+  };
+
   const onPublish: SubmitHandler<BlogSchemaType> = (data) => {
-    console.log("data", data);
     setSuccess("");
     setError("");
 
@@ -174,7 +190,11 @@ const CreateBlogForm = () => {
                 label={isPublishing ? "Publishing..." : "Publish"}
                 className="bg-blue-700"
               />
-              <Button type="button" label="Save as Draft" />
+              <Button
+                type="button"
+                label={isSavingAsDraft ? "Saving..." : "Save as Draft"}
+                onClick={handleSubmit(onSaveDraft)}
+              />
             </div>
           </div>
         </div>
