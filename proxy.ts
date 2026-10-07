@@ -13,8 +13,6 @@ export default middleware((req) => {
   const { nextUrl } = req;
   const isLoggedIn = !!req.auth;
 
-  console.log("Login Status>>> ", isLoggedIn);
-
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
   const isAuthRoute = authRoutes.includes(nextUrl.pathname);
