@@ -8,16 +8,21 @@ import Notifications from "./Notifications";
 import UserButton from "./UserButton";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const NavBar = () => {
   const session = useSession();
   const isLoggedIn = session.status === "authenticated";
+  const router = useRouter();
 
   return (
     <nav className="sticky top-0 border-b z-50 bg-background">
       <Container>
         <div className="flex justify-between items-center gap-8">
-          <div className="flex items-center gap-1 cursor-pointer">
+          <div
+            className="flex items-center gap-1 cursor-pointer"
+            onClick={() => router.push("/blog/feed/1")}
+          >
             <FaBlogger size={24} />
             <div className="font-bold text-xl">DerinSpot.blog</div>
           </div>
