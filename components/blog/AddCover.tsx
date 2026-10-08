@@ -75,7 +75,8 @@ const AddCover = ({
           "flex items-center gap-2 rounded-md text-sm font-medium transition-colors disabled:pointer-events-none disabled:opacity-50",
           variant === "standalone"
             ? "w-full justify-center border border-dashed border-border bg-background px-4 py-6 text-foreground hover:bg-muted dark:border-input dark:bg-input/30 dark:hover:bg-input/50"
-            : "bg-black/60 px-3 py-1.5 text-white backdrop-blur-sm hover:bg-black/80"
+            : "bg-black/60 px-3 py-1.5 text-white backdrop-blur-sm hover:bg-black/80",
+          "cursor-pointer",
         )}
       >
         <ImageIcon size={16} />
@@ -83,8 +84,8 @@ const AddCover = ({
           {isUploading
             ? "Uploading..."
             : !!replaceUrl
-            ? "Change Cover Image"
-            : "Add Cover Image"}
+              ? "Change Cover Image"
+              : "Add Cover Image"}
         </span>
       </button>
     </div>

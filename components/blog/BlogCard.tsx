@@ -45,6 +45,7 @@ const BlogCard = ({
             <Image
               src={blog.coverImage}
               fill
+              sizes="160px"
               alt={blog.title}
               className="object-cover rounded-md"
             />

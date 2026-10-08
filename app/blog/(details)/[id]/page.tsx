@@ -1,6 +1,6 @@
 import { getBlogById } from "@/actions/blogs/getblogbyid";
 import { auth } from "@/auth";
-import BlockNoteEditor from "@/components/blog/editor/BlockNoteEditor";
+import BlogContentViewer from "@/components/blog/editor/BlogContentViewer";
 import Reactions from "@/components/blog/Reactions";
 import UserSummary from "@/components/blog/UserSummary";
 import Alert from "@/components/common/Alert";
@@ -38,6 +38,8 @@ const BlogContent = async ({ params }: BlogContentProps) => {
           <Image
             src={blog.coverImage}
             fill
+            sizes="(max-width: 900px) 100vw, 900px"
+            priority
             alt="Cover Image"
             className="object-cover rounded"
           />
@@ -72,7 +74,7 @@ const BlogContent = async ({ params }: BlogContentProps) => {
         </div>
       )}
       <div>
-        <BlockNoteEditor editable={false} initialContent={blog.content} />
+        <BlogContentViewer content={blog.content} />
       </div>
     </div>
   );

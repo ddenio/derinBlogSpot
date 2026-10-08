@@ -14,12 +14,14 @@ import { tags } from "@/lib/tags";
 import Button from "../common/Button";
 import Alert from "../common/Alert";
 import { createBlog } from "@/actions/blogs/create-blog";
+import { Blog } from "@/generated/prisma/client";
+import { editBlog } from "@/actions/blogs/edit-blog";
 
 const BlockNoteEditor = dynamic(() => import("./editor/BlockNoteEditor"), {
   ssr: false,
 });
 
-const CreateBlogForm = () => {
+const CreateBlogForm = ({ blog }: { blog?: Blog }) => {
   const session = useSession();
   const userId = session.data?.user.userId;
   const [uploadedCover, setUploadedCover] = useState<string>();
@@ -38,10 +40,19 @@ const CreateBlogForm = () => {
     setValue,
   } = useForm<BlogSchemaType>({
     resolver: zodResolver(BlogSchema),
-    defaultValues: {
-      userId,
-      isPublished: false,
-    },
+    defaultValues: blog
+      ? {
+          userId: blog.userId,
+          isPublished: blog.isPublished,
+          title: blog.title,
+          content: blog.content,
+          coverImage: blog.coverImage || undefined,
+          tags: blog.tags,
+        }
+      : {
+          userId,
+          isPublished: false,
+        },
   });
 
   useEffect(() => {
@@ -52,7 +63,7 @@ const CreateBlogForm = () => {
         shouldTouch: true,
       });
     }
-  }, [uploadedCover]);
+  }, [uploadedCover, setValue]);
 
   useEffect(() => {
     if (typeof content === "string") {
@@ -62,7 +73,13 @@ const CreateBlogForm = () => {
         shouldTouch: true,
       });
     }
-  }, [content]);
+  }, [content, setValue]);
+
+  useEffect(() => {
+    if (blog?.coverImage) {
+      setUploadedCover(blog.coverImage);
+    }
+  }, [blog?.coverImage]);
 
   const onChange = (content: string) => {
     setContent(content);
@@ -73,13 +90,24 @@ const CreateBlogForm = () => {
     setError("");
 
     startSavingAsDraft(async () => {
-      try {
-        const res = await createBlog({ ...data, isPublished: false });
+      if (blog) {
+        try {
+          const res = await editBlog({ ...data, isPublished: false }, blog.id);
 
-        if (res.error) setError(res.error);
-        if (res.success) setSuccess(res.success);
-      } catch {
-        setError("Something went wrong. Please try again.");
+          if (res.error) setError(res.error);
+          if (res.success) setSuccess(res.success);
+        } catch {
+          setError("Something went wrong. Please try again.");
+        }
+      } else {
+        try {
+          const res = await createBlog({ ...data, isPublished: false });
+
+          if (res.error) setError(res.error);
+          if (res.success) setSuccess(res.success);
+        } catch {
+          setError("Something went wrong. Please try again.");
+        }
       }
     });
   };
@@ -93,13 +121,24 @@ const CreateBlogForm = () => {
     }
 
     startPublishing(async () => {
-      try {
-        const res = await createBlog({ ...data, isPublished: true });
+      if (blog) {
+        try {
+          const res = await editBlog({ ...data, isPublished: true }, blog.id);
 
-        if (res.error) setError(res.error);
-        if (res.success) setSuccess(res.success);
-      } catch {
-        setError("Something went wrong. Please try again.");
+          if (res.error) setError(res.error);
+          if (res.success) setSuccess(res.success);
+        } catch {
+          setError("Something went wrong. Please try again.");
+        }
+      } else {
+        try {
+          const res = await createBlog({ ...data, isPublished: true });
+
+          if (res.error) setError(res.error);
+          if (res.success) setSuccess(res.success);
+        } catch {
+          setError("Something went wrong. Please try again.");
+        }
       }
     });
   };
@@ -166,7 +205,10 @@ const CreateBlogForm = () => {
             </span>
           )}
         </fieldset>
-        <BlockNoteEditor onChange={onChange} />
+        <BlockNoteEditor
+          onChange={onChange}
+          initialContent={blog?.content ? blog.content : ""}
+        />
         {errors.content && errors.content.message && (
           <span className="text-sm text-rose-400">
             {errors.content.message}

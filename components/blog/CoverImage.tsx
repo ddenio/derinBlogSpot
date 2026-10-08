@@ -31,7 +31,14 @@ const CoverImage = ({ url, isEditor, setUploadedCover }: CoverImageProps) => {
 
   return (
     <div className="relative w-full h-[35vh] group rounded-xl overflow-hidden">
-      <Image src={url} fill alt="Cover Image" className="object-cover" />
+      <Image
+        src={url}
+        fill
+        sizes="(max-width: 1200px) 100vw, 1200px"
+        priority
+        alt="Cover Image"
+        className="object-cover"
+      />
       {isEditor && (
         <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-x-2">
           <AddCover
@@ -40,7 +47,7 @@ const CoverImage = ({ url, isEditor, setUploadedCover }: CoverImageProps) => {
             onUploadingChange={setIsUploading}
           />
           <button
-            className="flex items-center gap-2 rounded-md bg-black/60 text-white px-3 py-1.5 text-sm font-medium backdrop-blur-sm hover:bg-black/80 transition-colors"
+            className="flex items-center gap-2 rounded-md bg-black/60 text-white px-3 py-1.5 text-sm font-medium backdrop-blur-sm hover:bg-black/80 transition-colors cursor-pointer"
             type="button"
             disabled={isRemoving}
             onClick={() => {
