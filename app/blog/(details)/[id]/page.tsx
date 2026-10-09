@@ -36,7 +36,7 @@ const BlogContent = async ({ params }: BlogContentProps) => {
   return (
     <div className="flex flex-col max-w-225 m-auto gap-6">
       {blog.coverImage && (
-        <div className="relative w-full aspect-[21/9] mt-2 overflow-hidden">
+        <div className="relative w-full aspect-5/2 mt-2 overflow-hidden">
           <Image
             src={blog.coverImage}
             fill
