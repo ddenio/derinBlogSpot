@@ -5,7 +5,9 @@ import Reactions from "@/components/blog/Reactions";
 import UserSummary from "@/components/blog/UserSummary";
 import Alert from "@/components/common/Alert";
 import Tag from "@/components/common/Tag";
+import { buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { Pencil } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { FaRegBookmark } from "react-icons/fa";
@@ -50,7 +52,11 @@ const BlogContent = async ({ params }: BlogContentProps) => {
           <UserSummary user={blog.user} createdDate={blog.createdAt} />
         )}
         {session?.user.userId === blog.userId && (
-          <Link className="text-orange-400" href={`/blog/edit/${blog.id}`}>
+          <Link
+            className={buttonVariants({ variant: "outline", size: "sm" })}
+            href={`/blog/edit/${blog.id}`}
+          >
+            <Pencil />
             Edit
           </Link>
         )}
