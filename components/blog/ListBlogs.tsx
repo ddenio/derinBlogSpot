@@ -1,5 +1,6 @@
 import { Blog, User } from "@/generated/prisma/client";
 import Link from "next/link";
+import qs from "query-string";
 import BlogCard from "./BlogCard";
 
 export type BlogWithUser = Blog & {
@@ -11,6 +12,7 @@ interface ListBlogsProps {
   hasMore: boolean;
   currentPage: number;
   isUserProfile?: boolean;
+  tag?: string;
 }
 
 const ListBlogs = ({
@@ -18,7 +20,14 @@ const ListBlogs = ({
   hasMore,
   currentPage,
   isUserProfile,
+  tag,
 }: ListBlogsProps) => {
+  const pageHref = (page: number) =>
+    qs.stringifyUrl(
+      { url: `/blog/feed/${page}`, query: { tag } },
+      { skipNull: true, skipEmptyString: true },
+    );
+
   return (
     <div className="flex flex-col max-w-200 m-auto justify-between min-h-[85vh] px-4 pt-2">
       <section>
@@ -29,12 +38,12 @@ const ListBlogs = ({
 
       <div className="flex justify-between mt-4">
         {currentPage > 1 && (
-          <Link href={`/blog/feed/${currentPage - 1}`}>
+          <Link href={pageHref(currentPage - 1)}>
             <span>Previous</span>
           </Link>
         )}
         {hasMore && (
-          <Link href={`/blog/feed/${currentPage + 1}`}>
+          <Link href={pageHref(currentPage + 1)}>
             <span>Next</span>
           </Link>
         )}
