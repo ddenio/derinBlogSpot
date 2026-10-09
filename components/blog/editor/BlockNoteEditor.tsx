@@ -55,7 +55,7 @@ const BlockNoteEditor = ({
     <BlockNoteView
       editor={editor}
       theme={resolvedTheme === "dark" ? "dark" : "light"}
-      className="rounded-md border border-border"
+      className={editable === false ? "" : "rounded-md border border-border"}
       onChange={
         onChange
           ? () => {
