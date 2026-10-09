@@ -64,7 +64,7 @@ const BlogContent = async ({ params }: BlogContentProps) => {
       <div className="flex flex-col gap-2">
         <Separator />
         <div className="flex items-center justify-between">
-          <Reactions />
+          <Reactions blog={blog} />
           <div className="cursor-pointer">
             <FaRegBookmark size={18} />
           </div>

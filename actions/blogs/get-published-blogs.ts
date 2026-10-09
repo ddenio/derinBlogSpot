@@ -1,5 +1,6 @@
 "use server";
 
+import { auth } from "@/auth";
 import { db } from "@/lib/db";
 
 export interface SearchObj {
@@ -20,6 +21,10 @@ export const getPublishedBlogs = async ({
 }: GetPublishedBlogsParams) => {
   const skip = (page - 1) * limit;
   const { tag, title } = searchObj ?? {};
+
+  const session = await auth();
+  const userId = session?.user.userId;
+
   const where = {
     isPublished: true,
     ...(tag ? { tags: { has: tag } } : {}),
@@ -40,6 +45,19 @@ export const getPublishedBlogs = async ({
             id: true,
             name: true,
             image: true,
+          },
+        },
+        _count: {
+          select: {
+            claps: true,
+          },
+        },
+        claps: {
+          where: {
+            userId,
+          },
+          select: {
+            id: true,
           },
         },
       },
