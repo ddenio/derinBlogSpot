@@ -35,7 +35,7 @@ const NavBar = () => {
               <SearchInput />
             </Suspense>
           )}
-          <div className="flex gap-5 sm:gap-8 items-center cursor-pointer">
+          <div className="flex gap-5 sm:gap-8 items-center">
             <ThemeToggle />
             {isLoggedIn && <Notifications />}
             {isLoggedIn && <UserButton />}

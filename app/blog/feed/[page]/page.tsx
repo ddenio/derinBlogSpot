@@ -24,7 +24,7 @@ const BlogFeed = async ({ params, searchParams }: BlogFeedProps) => {
   });
 
   if (error) return <Alert error message="Error fetching blogs!" />;
-  if (!success) return <Alert message="No Posts!" />;
+  if (!success) return <Alert message="No Blogs!" />;
 
   const { blogs, hasMore } = success;
 

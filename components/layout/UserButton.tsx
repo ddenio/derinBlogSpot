@@ -20,7 +20,7 @@ const UserButton = () => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
+      <DropdownMenuTrigger className="cursor-pointer">
         <Avatar>
           <AvatarImage src={imageUrl} />
           <AvatarFallback className="border-2 border-slate-500 dark: border-slate-50">
@@ -45,8 +45,11 @@ const UserButton = () => {
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <button className="flex items-center gap-2">
-            <FaRegBookmark size={16} /> Bookmark
+          <button
+            onClick={() => router.push("/blog/bookmarks/1")}
+            className="flex items-center gap-2"
+          >
+            <FaRegBookmark size={16} /> Bookmarks
           </button>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
