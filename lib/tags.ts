@@ -1,3 +1,14 @@
+export const featuredTags = [
+  "All",
+  "JavaScript",
+  "TypeScript",
+  "React",
+  "Next.js",
+  "Node.js",
+  "Python",
+  "CSS",
+];
+
 export const tags = [
   "All",
   "HTML",
