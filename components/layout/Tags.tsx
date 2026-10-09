@@ -31,10 +31,12 @@ const Tags = () => {
   );
 
   const select = (tag: string) => {
+    const clear = tag === "All" || tag === selected;
+
     const url = qs.stringifyUrl(
       {
         url: "/blog/feed/1",
-        query: { tag: tag === "All" ? null : tag },
+        query: { tag: clear ? null : tag },
       },
       { skipNull: true },
     );
