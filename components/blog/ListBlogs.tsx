@@ -13,6 +13,7 @@ interface ListBlogsProps {
   currentPage: number;
   isUserProfile?: boolean;
   tag?: string;
+  title?: string;
 }
 
 const ListBlogs = ({
@@ -21,10 +22,11 @@ const ListBlogs = ({
   currentPage,
   isUserProfile,
   tag,
+  title,
 }: ListBlogsProps) => {
   const pageHref = (page: number) =>
     qs.stringifyUrl(
-      { url: `/blog/feed/${page}`, query: { tag } },
+      { url: `/blog/feed/${page}`, query: { tag, title } },
       { skipNull: true, skipEmptyString: true },
     );
 

@@ -2,21 +2,30 @@
 
 import { db } from "@/lib/db";
 
+export interface SearchObj {
+  tag?: string;
+  title?: string;
+}
+
 interface GetPublishedBlogsParams {
   page?: number;
   limit?: number;
-  tag?: string;
+  searchObj?: SearchObj;
 }
 
 export const getPublishedBlogs = async ({
   page = 1,
   limit = 5,
-  tag,
+  searchObj,
 }: GetPublishedBlogsParams) => {
   const skip = (page - 1) * limit;
+  const { tag, title } = searchObj ?? {};
   const where = {
     isPublished: true,
     ...(tag ? { tags: { has: tag } } : {}),
+    ...(title
+      ? { title: { contains: title, mode: "insensitive" as const } }
+      : {}),
   };
 
   try {
