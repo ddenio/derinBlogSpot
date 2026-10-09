@@ -18,6 +18,8 @@ model User {
   accounts      Account[]
   blogs Blog[]
   claps Clap[]
+  bookmarks Bookmark[]
+
  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -79,12 +81,25 @@ model Blog{
   createdAt DateTime @default(now())
   tags String[]
   claps Clap[]
+  bookmarks Bookmark[]
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 
 model Clap {
+  id String @id @default(cuid())
+  userId String
+  blogId String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  blog Blog @relation(fields: [blogId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, blogId])
+}
+
+model Bookmark {
   id String @id @default(cuid())
   userId String
   blogId String

@@ -11,6 +11,9 @@ export type BlogWithUser = Blog & {
   claps: {
     id: string;
   }[];
+  bookmarks: {
+    id: string;
+  }[];
 };
 
 interface ListBlogsProps {

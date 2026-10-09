@@ -10,7 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { Pencil } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { FaRegBookmark } from "react-icons/fa";
+import BookmarkButton from "@/components/blog/BookmarkButton";
 
 import "./editor.css";
 
@@ -65,9 +65,7 @@ const BlogContent = async ({ params }: BlogContentProps) => {
         <Separator />
         <div className="flex items-center justify-between">
           <Reactions blog={blog} />
-          <div className="cursor-pointer">
-            <FaRegBookmark size={18} />
-          </div>
+          <BookmarkButton blog={blog} />
         </div>
         <Separator />
       </div>

@@ -4,7 +4,7 @@ import Image from "next/image";
 import UserSummary from "./UserSummary";
 import Tag from "../common/Tag";
 import Reactions from "./Reactions";
-import { FaRegBookmark } from "react-icons/fa";
+import BookmarkButton from "./BookmarkButton";
 
 const BlogCard = ({
   blog,
@@ -51,8 +51,8 @@ const BlogCard = ({
             />
           </Link>
         )}
-        <div className="flex items-end cursor-pointer">
-          <FaRegBookmark size={18} />
+        <div className="flex items-end">
+          <BookmarkButton blog={blog} />
         </div>
       </div>
     </div>

@@ -33,6 +33,14 @@ export const getBlogById = async ({ blogId }: { blogId: string }) => {
             id: true,
           },
         },
+        bookmarks: {
+          where: {
+            userId,
+          },
+          select: {
+            id: true,
+          },
+        },
       },
     });
 
