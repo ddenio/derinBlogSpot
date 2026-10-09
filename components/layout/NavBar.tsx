@@ -9,13 +9,15 @@ import UserButton from "./UserButton";
 import Link from "next/link";
 import { Suspense } from "react";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Tags from "./Tags";
 
 const NavBar = () => {
   const session = useSession();
   const isLoggedIn = session.status === "authenticated";
   const router = useRouter();
+  const pathname = usePathname();
+  const showFilters = pathname.startsWith("/blog/feed");
 
   return (
     <nav className="sticky top-0 border-b z-50 bg-background">
@@ -28,7 +30,11 @@ const NavBar = () => {
             <FaBlogger size={24} />
             <div className="font-bold text-xl">DerinSpot.blog</div>
           </div>
-          <SearchInput />
+          {showFilters && (
+            <Suspense>
+              <SearchInput />
+            </Suspense>
+          )}
           <div className="flex gap-5 sm:gap-8 items-center">
             <ThemeToggle />
             {isLoggedIn && <Notifications />}
@@ -42,9 +48,11 @@ const NavBar = () => {
           </div>
         </div>
       </Container>
-      <Suspense>
-        <Tags />
-      </Suspense>
+      {showFilters && (
+        <Suspense>
+          <Tags />
+        </Suspense>
+      )}
     </nav>
   );
 };
