@@ -3,8 +3,12 @@ export const publicRoutes = [
   "/email-verification",
   "/password-email-form",
   "/password-reset-form",
-  "/blog/feed/1",
-  "/blog/:id",
+];
+
+// Dynamic public routes, matched against the whole pathname
+export const publicRoutePatterns = [
+  /^\/blog\/feed\/\d+$/, // /blog/feed/1, /blog/feed/2, ...
+  /^\/blog\/[^/]+$/, // /blog/<id>, but not nested paths
 ];
 
 export const authRoutes = ["/login", "/register"];

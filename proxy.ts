@@ -4,6 +4,7 @@ import {
   apiAuthPrefix,
   authRoutes,
   LOGIN_REDIRECT,
+  publicRoutePatterns,
   publicRoutes,
 } from "./routes";
 
@@ -14,7 +15,9 @@ export default middleware((req) => {
   const isLoggedIn = !!req.auth;
 
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
-  const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
+  const isPublicRoute =
+    publicRoutes.includes(nextUrl.pathname) ||
+    publicRoutePatterns.some((re) => re.test(nextUrl.pathname));
   const isAuthRoute = authRoutes.includes(nextUrl.pathname);
 
   if (isApiAuthRoute) {
