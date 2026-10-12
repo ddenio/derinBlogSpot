@@ -13,6 +13,7 @@ import Link from "next/link";
 import BookmarkButton from "@/components/blog/BookmarkButton";
 
 import "./editor.css";
+import Comments from "@/components/comments/Comments";
 
 interface BlogContentProps {
   params: Promise<{
@@ -80,6 +81,8 @@ const BlogContent = async ({ params }: BlogContentProps) => {
       <div>
         <BlogContentViewer content={blog.content} />
       </div>
+      <Separator />
+      <Comments blog={blog} />
     </div>
   );
 };
