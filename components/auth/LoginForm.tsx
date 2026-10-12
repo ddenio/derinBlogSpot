@@ -8,19 +8,17 @@ import FormField from "../common/FormField";
 import Heading from "../common/Heading";
 import Button from "../common/Button";
 import SocialAuth from "./SocialAuth";
-import { useState, useTransition } from "react";
+import { useEffect, useTransition } from "react";
 import { login } from "@/actions/auth/login";
-import Alert from "../common/Alert";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { LOGIN_REDIRECT } from "@/routes";
 import Link from "next/link";
+import { toast } from "react-hot-toast";
 
 const LoginForm = () => {
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
-  const [error, setError] = useState<string | undefined>("");
-  const [success, setSuccess] = useState<string | undefined>("");
   const {
     register,
     handleSubmit,
@@ -35,23 +33,27 @@ const LoginForm = () => {
       ? "Email address already in use!"
       : "";
 
+  useEffect(() => {
+    if (urlError) toast.error(urlError, { id: "login-url-error" });
+  }, [urlError]);
+
   const onSubmit: SubmitHandler<LoginSchemaType> = (data) => {
-    setError("");
     startTransition(async () => {
       try {
         const res = await login(data);
         if (res?.error) {
           router.replace("/login");
-          setError(res.error);
+          toast.error(res.error);
         }
 
         if (res?.success) {
-          setSuccess(res.success);
+          toast.success(res.success);
           await update();
           setTimeout(() => router.push(LOGIN_REDIRECT), 1000);
         }
       } catch (error) {
         console.error(error);
+        toast.error("Something went wrong. Please try again.");
       }
     });
   };
@@ -78,9 +80,6 @@ const LoginForm = () => {
         type="password"
         disabled={isPending}
       />
-      {error && <Alert message={error} error />}
-      {success && <Alert message={success} success />}
-
       <Button
         type="submit"
         label={isPending ? "Submitting..." : "Login"}
@@ -88,7 +87,6 @@ const LoginForm = () => {
       />
       <div className="flex justify-center my-2">Or</div>
       <SocialAuth />
-      {urlError && <Alert message={urlError} error />}
       <div className="flex items-end justify-end">
         <Link
           className="mt-2 text-sm underline text-slate-700 dark:text-slate-300"

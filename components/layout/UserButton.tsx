@@ -12,11 +12,24 @@ import {
 import { FaRegBookmark } from "react-icons/fa";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
 
 const UserButton = () => {
   const session = useSession();
   const imageUrl = session.data?.user.image || "";
   const router = useRouter();
+
+  // redirect: false keeps the page alive so the toast isn't lost to a full reload
+  const handleSignOut = async () => {
+    try {
+      await signOut({ redirect: false });
+      toast.success("Logged out successfully");
+      router.refresh();
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong. Please try again.");
+    }
+  };
 
   return (
     <DropdownMenu>
@@ -60,7 +73,7 @@ const UserButton = () => {
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <button onClick={() => signOut()} className="flex items-center gap-2">
+          <button onClick={handleSignOut} className="flex items-center gap-2">
             <LogOut size={18} /> Sign Out
           </button>
         </DropdownMenuItem>

@@ -38,21 +38,29 @@ const AddCommentsForm = ({
   });
 
   const onSubmit: SubmitHandler<CommentSchemaType> = (data) => {
-    startTransition(() => {
-      addComment({
-        values: data,
-        userId,
-        blogId,
-        parentId,
-        repliedToUserId: repliedToId,
-      }).then((res) => {
-        if (res.error) return toast.error(res.error);
+    startTransition(async () => {
+      try {
+        const res = await addComment({
+          values: data,
+          userId,
+          blogId,
+          parentId,
+          repliedToUserId: repliedToId,
+        });
+
+        if (res.error) {
+          toast.error(res.error);
+          return;
+        }
 
         if (res.success) {
           toast.success(res.success);
           reset();
         }
-      });
+      } catch (error) {
+        console.error(error);
+        toast.error("Something went wrong. Please try again.");
+      }
     });
   };
 

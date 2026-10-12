@@ -1,12 +1,12 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState, useTransition } from "react";
+import { useTransition } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import Heading from "../common/Heading";
 import FormField from "../common/FormField";
-import Alert from "../common/Alert";
 import Button from "../common/Button";
+import { toast } from "react-hot-toast";
 
 import { useRouter, useSearchParams } from "next/navigation";
 import {
@@ -19,8 +19,6 @@ const PasswordResetFormClient = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
-  const [error, setError] = useState<string | undefined>("");
-  const [success, setSuccess] = useState<string | undefined>("");
   const {
     register,
     handleSubmit,
@@ -32,19 +30,19 @@ const PasswordResetFormClient = () => {
   const token = searchParams.get("token");
 
   const onSubmit: SubmitHandler<PasswordResetSchemaType> = (data) => {
-    setError("");
     startTransition(async () => {
       try {
         const res = await passwordReset(data, token);
         if (res?.error) {
-          setError(res.error);
+          toast.error(res.error);
         }
         if (res?.success) {
-          setSuccess(res.success);
+          toast.success(res.success);
           setTimeout(() => router.push("/login"), 2000);
         }
       } catch (error) {
         console.error(error);
+        toast.error("Something went wrong. Please try again.");
       }
     });
   };
@@ -71,9 +69,6 @@ const PasswordResetFormClient = () => {
         type="password"
         disabled={isPending}
       />
-
-      {error && <Alert message={error} error />}
-      {success && <Alert message={success} success />}
 
       <Button
         type="submit"

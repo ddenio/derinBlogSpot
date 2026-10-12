@@ -12,7 +12,7 @@ import dynamic from "next/dynamic";
 import CoverImage from "./CoverImage";
 import { tags } from "@/lib/tags";
 import Button from "../common/Button";
-import Alert from "../common/Alert";
+import { toast } from "react-hot-toast";
 import { createBlog } from "@/actions/blogs/create-blog";
 import { Blog } from "@/generated/prisma/client";
 import { editBlog } from "@/actions/blogs/edit-blog";
@@ -26,8 +26,6 @@ const CreateBlogForm = ({ blog }: { blog?: Blog }) => {
   const userId = session.data?.user.userId;
   const [uploadedCover, setUploadedCover] = useState<string>();
   const [content, setContent] = useState<string | undefined>();
-  const [success, setSuccess] = useState<string | undefined>();
-  const [error, setError] = useState<string | undefined>();
   const [isPublishing, startPublishing] = useTransition();
   const [isSavingAsDraft, startSavingAsDraft] = useTransition();
 
@@ -86,38 +84,33 @@ const CreateBlogForm = ({ blog }: { blog?: Blog }) => {
   };
 
   const onSaveDraft: SubmitHandler<BlogSchemaType> = (data) => {
-    setSuccess("");
-    setError("");
-
     startSavingAsDraft(async () => {
       if (blog) {
         try {
           const res = await editBlog({ ...data, isPublished: false }, blog.id);
 
-          if (res.error) setError(res.error);
-          if (res.success) setSuccess(res.success);
+          if (res.error) toast.error(res.error);
+          if (res.success) toast.success(res.success);
         } catch {
-          setError("Something went wrong. Please try again.");
+          toast.error("Something went wrong. Please try again.");
         }
       } else {
         try {
           const res = await createBlog({ ...data, isPublished: false });
 
-          if (res.error) setError(res.error);
-          if (res.success) setSuccess(res.success);
+          if (res.error) toast.error(res.error);
+          if (res.success) toast.success(res.success);
         } catch {
-          setError("Something went wrong. Please try again.");
+          toast.error("Something went wrong. Please try again.");
         }
       }
     });
   };
 
   const onPublish: SubmitHandler<BlogSchemaType> = (data) => {
-    setSuccess("");
-    setError("");
-
     if (data.tags.length > 4) {
-      return setError("Select a max of 4 tags!");
+      toast.error("Select a max of 4 tags!");
+      return;
     }
 
     startPublishing(async () => {
@@ -125,19 +118,19 @@ const CreateBlogForm = ({ blog }: { blog?: Blog }) => {
         try {
           const res = await editBlog({ ...data, isPublished: true }, blog.id);
 
-          if (res.error) setError(res.error);
-          if (res.success) setSuccess(res.success);
+          if (res.error) toast.error(res.error);
+          if (res.success) toast.success(res.success);
         } catch {
-          setError("Something went wrong. Please try again.");
+          toast.error("Something went wrong. Please try again.");
         }
       } else {
         try {
           const res = await createBlog({ ...data, isPublished: true });
 
-          if (res.error) setError(res.error);
-          if (res.success) setSuccess(res.success);
+          if (res.error) toast.error(res.error);
+          if (res.success) toast.success(res.success);
         } catch {
-          setError("Something went wrong. Please try again.");
+          toast.error("Something went wrong. Please try again.");
         }
       }
     });
@@ -220,8 +213,6 @@ const CreateBlogForm = ({ blog }: { blog?: Blog }) => {
           {errors.userId && errors.userId.message && (
             <span className="text-sm text-rose-400">Missing a User Id</span>
           )}
-          {success && <Alert message={success} success />}
-          {error && <Alert message={error} error />}
           <div className="flex items-center justify-between gap-6">
             <div className="flex gap-4">
               <Button

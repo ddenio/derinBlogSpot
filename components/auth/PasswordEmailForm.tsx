@@ -5,18 +5,16 @@ import {
   PasswordEmailSchemaType,
 } from "@/schemas/PasswordEmailSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState, useTransition } from "react";
+import { useTransition } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import Heading from "../common/Heading";
 import FormField from "../common/FormField";
-import Alert from "../common/Alert";
 import Button from "../common/Button";
 import { passwordEmail } from "@/actions/auth/password-email";
+import { toast } from "react-hot-toast";
 
 const PasswordEmailForm = () => {
   const [isPending, startTransition] = useTransition();
-  const [error, setError] = useState<string | undefined>("");
-  const [success, setSuccess] = useState<string | undefined>("");
   const {
     register,
     handleSubmit,
@@ -26,18 +24,18 @@ const PasswordEmailForm = () => {
   });
 
   const onSubmit: SubmitHandler<PasswordEmailSchemaType> = (data) => {
-    setError("");
     startTransition(async () => {
       try {
         const res = await passwordEmail(data);
         if (res?.error) {
-          setError(res.error);
+          toast.error(res.error);
         }
         if (res?.success) {
-          setSuccess(res.success);
+          toast.success(res.success);
         }
       } catch (error) {
         console.error(error);
+        toast.error("Something went wrong. Please try again.");
       }
     });
   };
@@ -55,9 +53,6 @@ const PasswordEmailForm = () => {
         placeholder="email"
         disabled={isPending}
       />
-
-      {error && <Alert message={error} error />}
-      {success && <Alert message={success} success />}
 
       <Button
         type="submit"
