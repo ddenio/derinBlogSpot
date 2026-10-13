@@ -50,6 +50,7 @@ export const getPublishedBlogs = async ({
         _count: {
           select: {
             claps: true,
+            comments: true,
           },
         },
         claps: {
