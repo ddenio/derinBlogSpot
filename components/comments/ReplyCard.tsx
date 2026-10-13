@@ -38,6 +38,7 @@ const ReplyCard = ({
               parentId={reply.parentId ? reply.parentId : undefined}
               repliedToId={reply.userId}
               placeholder="Add Reply"
+              onSuccess={() => setShowForm(false)}
             />
           )}
         </div>

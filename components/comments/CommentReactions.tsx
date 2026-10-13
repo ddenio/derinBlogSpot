@@ -8,6 +8,8 @@ import { FaRegComment } from "react-icons/fa";
 import { BsReply } from "react-icons/bs";
 import { MdDeleteOutline } from "react-icons/md";
 import { useSession } from "next-auth/react";
+import { deleteComment } from "@/actions/comments/delete-comment";
+import toast from "react-hot-toast";
 
 interface CommentReactionsProps {
   comment: CommentWithUser;
@@ -31,6 +33,16 @@ const CommentReactions = ({
   const handleShowReplies = () => {
     if (setShowReplies) {
       setShowReplies((prev) => !prev);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (userId) {
+      const res = await deleteComment(comment.id, userId);
+
+      if (res.success) {
+        toast(res.success);
+      }
     }
   };
 
@@ -64,7 +76,7 @@ const CommentReactions = ({
           Reply
         </span>
         {userId === comment.userId && (
-          <span className="cursor-pointer">
+          <span onClick={handleDelete} className="cursor-pointer">
             <MdDeleteOutline size={20} />
           </span>
         )}

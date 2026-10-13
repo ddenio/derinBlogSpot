@@ -31,6 +31,7 @@ const TextAreaField = <T extends FieldValues>({
     <div>
       {label && <span className="block text-sm">{label}</span>}
       <textarea
+        suppressHydrationWarning
         autoFocus
         autoComplete="off"
         id={id}

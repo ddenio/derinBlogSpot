@@ -16,6 +16,7 @@ interface IAddCommentsProps {
   repliedToId?: string;
   placeholder?: string;
   creatorId?: string;
+  onSuccess?: () => void;
 }
 
 const AddCommentsForm = ({
@@ -25,6 +26,7 @@ const AddCommentsForm = ({
   repliedToId,
   placeholder,
   creatorId,
+  onSuccess,
 }: IAddCommentsProps) => {
   const [isPending, startTransition] = useTransition();
 
@@ -56,6 +58,7 @@ const AddCommentsForm = ({
         if (res.success) {
           toast.success(res.success);
           reset();
+          onSuccess?.();
         }
       } catch (error) {
         console.error(error);

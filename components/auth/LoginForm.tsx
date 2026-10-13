@@ -84,6 +84,7 @@ const LoginForm = () => {
         type="submit"
         label={isPending ? "Submitting..." : "Login"}
         disabled={isPending}
+        className="cursor-pointer"
       />
       <div className="flex justify-center my-2">Or</div>
       <SocialAuth />

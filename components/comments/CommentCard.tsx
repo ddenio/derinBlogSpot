@@ -33,9 +33,13 @@ const CommentCard = ({ comment }: { comment: CommentWithUser }) => {
               parentId={comment.id}
               repliedToId={comment.userId}
               placeholder="Add Reply"
+              onSuccess={() => {
+                setShowForm(false);
+                setShowReplies(true);
+              }}
             />
           )}
-          {showReplies && <ListReplies comment={comment} userId={userId} />}
+          {showReplies && <ListReplies replies={comment.replies ?? []} userId={userId} />}
         </div>
       )}
     </div>

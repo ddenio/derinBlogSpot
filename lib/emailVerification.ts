@@ -47,5 +47,9 @@ export const sendEmailVerificationToken = async (
     html: `<p>Click <a href="${emailVerificationLink}">here</a> to verify your email!</p>`,
   });
 
+  if (res.error) {
+    console.error("Resend error:", res.error);
+  }
+
   return { error: res.error };
 };

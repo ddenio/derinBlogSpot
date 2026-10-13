@@ -8,6 +8,7 @@ export type CommentWithUser = Comment & {
   _count: {
     replies: number;
   };
+  replies?: CommentWithUser[];
 };
 
 const ListComments = ({ comments }: { comments: CommentWithUser[] }) => {

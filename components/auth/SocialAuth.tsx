@@ -18,7 +18,7 @@ const SocialAuth = () => {
         outlined
         icon={FaGithub}
         onClick={() => handleOnClick("github")}
-        className="flex-1"
+        className="flex-1 cursor-pointer"
       />
       <Button
         type="button"
@@ -26,7 +26,7 @@ const SocialAuth = () => {
         outlined
         icon={FaGoogle}
         onClick={() => handleOnClick("google")}
-        className="flex-1"
+        className="flex-1 cursor-pointer"
       />
     </div>
   );
