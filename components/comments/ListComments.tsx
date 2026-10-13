@@ -7,7 +7,9 @@ export type CommentWithUser = Comment & {
 
   _count: {
     replies: number;
+    claps: number;
   };
+  claps: { id: string }[];
   replies?: CommentWithUser[];
 };
 

@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { CommentWithUser } from "./ListComments";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { FaHandsClapping } from "react-icons/fa6";
 import { FaRegComment } from "react-icons/fa";
 import { BsReply } from "react-icons/bs";
@@ -10,6 +10,8 @@ import { MdDeleteOutline } from "react-icons/md";
 import { useSession } from "next-auth/react";
 import { deleteComment } from "@/actions/comments/delete-comment";
 import toast from "react-hot-toast";
+import { PiHandsClapping } from "react-icons/pi";
+import { clapComment } from "@/actions/comments/clap-comment";
 
 interface CommentReactionsProps {
   comment: CommentWithUser;
@@ -26,6 +28,8 @@ const CommentReactions = ({
 }: CommentReactionsProps) => {
   const session = useSession();
   const userId = session.data?.user.userId;
+  const [clapCount, setClapCount] = useState(comment._count.claps);
+  const [userHasClapped, setUserHasClapped] = useState(!!comment.claps.length);
 
   const handleReply = () => {
     setShowForm((prev) => !prev);
@@ -46,6 +50,17 @@ const CommentReactions = ({
     }
   };
 
+  const handleClap = async () => {
+    if (!userId) return;
+
+    setClapCount((prevCount) =>
+      userHasClapped ? prevCount - 1 : prevCount + 1,
+    );
+    setUserHasClapped((prevState) => !prevState);
+
+    await clapComment(comment.id, userId);
+  };
+
   return (
     <div
       className={cn(
@@ -54,8 +69,16 @@ const CommentReactions = ({
       )}
     >
       <div className="flex items-center gap-4">
-        <span className="flex items-center gap-1 cursor-pointer">
-          <FaHandsClapping size={20} /> {4}
+        <span
+          onClick={handleClap}
+          className="flex items-center gap-1 cursor-pointer"
+        >
+          {userHasClapped ? (
+            <FaHandsClapping size={20} />
+          ) : (
+            <PiHandsClapping size={20} />
+          )}{" "}
+          {clapCount}
         </span>
         {!isReply && (
           <span
