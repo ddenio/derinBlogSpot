@@ -12,7 +12,7 @@ import { useSession } from "next-auth/react";
 interface CommentReactionsProps {
   comment: CommentWithUser;
   setShowForm: Dispatch<SetStateAction<boolean>>;
-  setShowReplies: Dispatch<SetStateAction<boolean>>;
+  setShowReplies?: Dispatch<SetStateAction<boolean>>;
   isReply?: boolean;
 }
 
@@ -28,6 +28,11 @@ const CommentReactions = ({
   const handleReply = () => {
     setShowForm((prev) => !prev);
   };
+  const handleShowReplies = () => {
+    if (setShowReplies) {
+      setShowReplies((prev) => !prev);
+    }
+  };
 
   return (
     <div
@@ -41,7 +46,10 @@ const CommentReactions = ({
           <FaHandsClapping size={20} /> {4}
         </span>
         {!isReply && (
-          <span className="flex items-center gap-1 cursor-pointer">
+          <span
+            onClick={handleShowReplies}
+            className="flex items-center gap-1 cursor-pointer"
+          >
             <FaRegComment size={20} />
             Replies {comment._count.replies}
           </span>

@@ -3,6 +3,7 @@
 import { useEffect, useState, useTransition } from "react";
 import { CommentWithUser } from "./ListComments";
 import { getComments } from "@/actions/comments/get-comments";
+import ReplyCard from "./ReplyCard";
 
 const ListReplies = ({
   comment,
@@ -32,7 +33,13 @@ const ListReplies = ({
     <div className="text-sm">
       {isPending && <p>Loading...</p>}
       {error && <p className="text-rose-500">{error}</p>}
-      {!isPending && !error && replies.map((r) => <div key={r.id}></div>)}
+      {!isPending &&
+        !error &&
+        replies.map((r) => (
+          <div key={r.id}>
+            <ReplyCard reply={r} userId={userId} />
+          </div>
+        ))}
     </div>
   );
 };
