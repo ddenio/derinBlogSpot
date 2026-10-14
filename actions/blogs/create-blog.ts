@@ -7,13 +7,13 @@ import { BlogSchema, BlogSchemaType } from "@/schemas/BlogSchema";
 export const createBlog = async (values: BlogSchemaType) => {
   const vFields = BlogSchema.safeParse(values);
 
-  if (!vFields.success) return { errors: "Invalid fields!" };
+  if (!vFields.success) return { error: "Invalid fields!" };
 
   const { userId, isPublished } = vFields.data;
 
   const user = await getUserById(userId);
 
-  if (!user) return { errors: "User does not exist!" };
+  if (!user) return { error: "User does not exist!" };
 
   if (isPublished && !user.emailVerified) {
     return { error: "Not authorized! Verify your email!" };

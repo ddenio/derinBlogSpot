@@ -3,6 +3,7 @@
 import { BlogSchema, BlogSchemaType } from "@/schemas/BlogSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 import { SubmitHandler, useForm } from "react-hook-form";
 import FormField from "../common/FormField";
@@ -16,6 +17,7 @@ import { toast } from "react-hot-toast";
 import { createBlog } from "@/actions/blogs/create-blog";
 import { Blog } from "@/generated/prisma/client";
 import { editBlog } from "@/actions/blogs/edit-blog";
+import { deleteBlog } from "@/actions/blogs/delete-blog";
 
 const BlockNoteEditor = dynamic(() => import("./editor/BlockNoteEditor"), {
   ssr: false,
@@ -23,11 +25,14 @@ const BlockNoteEditor = dynamic(() => import("./editor/BlockNoteEditor"), {
 
 const CreateBlogForm = ({ blog }: { blog?: Blog }) => {
   const session = useSession();
+  const router = useRouter();
   const userId = session.data?.user.userId;
   const [uploadedCover, setUploadedCover] = useState<string>();
   const [content, setContent] = useState<string | undefined>();
   const [isPublishing, startPublishing] = useTransition();
   const [isSavingAsDraft, startSavingAsDraft] = useTransition();
+  const [isDeleting, startDeleting] = useTransition();
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
 
   console.log(uploadedCover);
 
@@ -119,7 +124,10 @@ const CreateBlogForm = ({ blog }: { blog?: Blog }) => {
           const res = await editBlog({ ...data, isPublished: true }, blog.id);
 
           if (res.error) toast.error(res.error);
-          if (res.success) toast.success(res.success);
+          if (res.success) {
+            toast.success(res.success);
+            router.push("/blog/feed/1");
+          }
         } catch {
           toast.error("Something went wrong. Please try again.");
         }
@@ -128,10 +136,37 @@ const CreateBlogForm = ({ blog }: { blog?: Blog }) => {
           const res = await createBlog({ ...data, isPublished: true });
 
           if (res.error) toast.error(res.error);
-          if (res.success) toast.success(res.success);
+          if (res.success) {
+            toast.success(res.success);
+            router.push("/blog/feed/1");
+          }
         } catch {
           toast.error("Something went wrong. Please try again.");
         }
+      }
+    });
+  };
+
+  const onDelete = () => {
+    if (!blog) return;
+
+    startDeleting(async () => {
+      try {
+        const res = await deleteBlog(blog.id);
+
+        if (res.error) {
+          toast.error(res.error);
+          setConfirmingDelete(false);
+          return;
+        }
+
+        if (res.success) {
+          toast.success(res.success);
+          router.push("/");
+        }
+      } catch {
+        toast.error("Something went wrong. Please try again.");
+        setConfirmingDelete(false);
       }
     });
   };
@@ -226,9 +261,35 @@ const CreateBlogForm = ({ blog }: { blog?: Blog }) => {
                 onClick={handleSubmit(onSaveDraft)}
               />
             </div>
-            <div>
-              <Button type="button" label="Delete" className="bg-rose-400" />
-            </div>
+            {blog && (
+              <div className="flex items-center gap-3">
+                {confirmingDelete ? (
+                  <>
+                    <span className="text-sm">Delete this blog?</span>
+                    <Button
+                      type="button"
+                      label="Cancel"
+                      onClick={() => setConfirmingDelete(false)}
+                      disabled={isDeleting}
+                    />
+                    <Button
+                      type="button"
+                      label={isDeleting ? "Deleting..." : "Yes, delete"}
+                      className="bg-rose-400"
+                      onClick={onDelete}
+                      disabled={isDeleting}
+                    />
+                  </>
+                ) : (
+                  <Button
+                    type="button"
+                    label="Delete"
+                    className="bg-rose-400"
+                    onClick={() => setConfirmingDelete(true)}
+                  />
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
