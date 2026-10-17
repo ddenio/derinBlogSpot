@@ -95,7 +95,10 @@ const CreateBlogForm = ({ blog }: { blog?: Blog }) => {
           const res = await editBlog({ ...data, isPublished: false }, blog.id);
 
           if (res.error) toast.error(res.error);
-          if (res.success) toast.success(res.success);
+          if (res.success) {
+            toast.success(res.success);
+            router.push(`/user/${blog.userId}/1`);
+          }
         } catch {
           toast.error("Something went wrong. Please try again.");
         }
@@ -104,7 +107,10 @@ const CreateBlogForm = ({ blog }: { blog?: Blog }) => {
           const res = await createBlog({ ...data, isPublished: false });
 
           if (res.error) toast.error(res.error);
-          if (res.success) toast.success(res.success);
+          if (res.success) {
+            toast.success(res.success);
+            router.push(`/user/${userId}/1`);
+          }
         } catch {
           toast.error("Something went wrong. Please try again.");
         }
@@ -162,7 +168,7 @@ const CreateBlogForm = ({ blog }: { blog?: Blog }) => {
 
         if (res.success) {
           toast.success(res.success);
-          router.push("/");
+          router.push(blog.isPublished ? "/" : `/user/${blog.userId}/1`);
         }
       } catch {
         toast.error("Something went wrong. Please try again.");

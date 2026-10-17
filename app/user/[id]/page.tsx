@@ -1,9 +1,9 @@
+import { redirect } from "next/navigation";
+
 const User = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
 
-  //could fetch data using the id param
-
-  return <>User Profile: {id}</>;
+  redirect(`/user/${id}/1`);
 };
 
 export default User;

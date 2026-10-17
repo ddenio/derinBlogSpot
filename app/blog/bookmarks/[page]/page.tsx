@@ -29,7 +29,12 @@ const Bookmarks = async ({ params }: BookmarksProps) => {
       <div className="max-w-200 m-auto mt-4 px-4">
         <Heading title="Bookmarks" lg />
       </div>
-      <ListBlogs blogs={blogs} hasMore={hasMore} currentPage={currentPage} />
+      <ListBlogs
+        blogs={blogs}
+        hasMore={hasMore}
+        currentPage={currentPage}
+        basePath="/blog/bookmarks"
+      />
     </div>
   );
 };

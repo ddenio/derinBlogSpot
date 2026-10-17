@@ -43,7 +43,10 @@ const UserButton = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem>
-          <button className="flex items-center gap-2">
+          <button
+            onClick={() => router.push(`/user/${session.data?.user.userId}/1`)}
+            className="flex items-center gap-2 cursor-pointer"
+          >
             <User size={18} /> Profile
           </button>
         </DropdownMenuItem>
@@ -51,7 +54,7 @@ const UserButton = () => {
         <DropdownMenuItem>
           <button
             onClick={() => router.push("/blog/create")}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 cursor-pointer"
           >
             <Pencil size={18} /> Create Post
           </button>
@@ -60,20 +63,23 @@ const UserButton = () => {
         <DropdownMenuItem>
           <button
             onClick={() => router.push("/blog/bookmarks/1")}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 cursor-pointer"
           >
             <FaRegBookmark size={16} /> Bookmarks
           </button>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <button className="flex items-center gap-2">
+          <button className="flex items-center gap-2 cursor-pointer">
             <Shield size={18} /> Admin
           </button>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <button onClick={handleSignOut} className="flex items-center gap-2">
+          <button
+            onClick={handleSignOut}
+            className="flex items-center gap-2 cursor-pointer"
+          >
             <LogOut size={18} /> Sign Out
           </button>
         </DropdownMenuItem>
