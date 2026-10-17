@@ -16,6 +16,7 @@ model User {
   emailVerified DateTime?
   image         String?
   bio           String?
+  tags          String[]
   accounts      Account[]
   blogs Blog[]
   claps Clap[]

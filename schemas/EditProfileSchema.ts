@@ -1,0 +1,12 @@
+import { z } from "zod";
+
+export const EditProfileSchema = z.object({
+  name: z
+    .string()
+    .min(4, "name must be 4 or more characters long")
+    .max(30, "name must be 30 or fewer characters long"),
+  bio: z.string().optional(),
+  tags: z.array(z.string()),
+});
+
+export type EditProfileSchemaType = z.infer<typeof EditProfileSchema>;
