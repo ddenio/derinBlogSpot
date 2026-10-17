@@ -32,6 +32,7 @@ const EditUserForm = ({
     resolver: zodResolver(EditProfileSchema),
     defaultValues: {
       name: user.name || undefined,
+      email: user.email || undefined,
       bio: user.bio || undefined,
       tags: user.tags || undefined,
     },
@@ -68,6 +69,16 @@ const EditUserForm = ({
         disabled={isPending}
         label="Name"
       />
+      {isCredentials && (
+        <FormField
+          id="email"
+          register={register}
+          errors={errors}
+          placeholder="email"
+          disabled={isPending || !isCredentials}
+          label="Email"
+        />
+      )}
       <FormField
         id="bio"
         register={register}

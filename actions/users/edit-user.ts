@@ -2,7 +2,11 @@
 
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
-import { getUserById } from "@/lib/user";
+import {
+  generateEmailVerificationToken,
+  sendEmailVerificationToken,
+} from "@/lib/emailVerification";
+import { getUserByEmail, getUserById } from "@/lib/user";
 import {
   EditProfileSchema,
   EditProfileSchemaType,
@@ -24,12 +28,43 @@ export const editUser = async (
 
   if (!user) return { error: "User does not exist!" };
 
-  await db.user.update({
-    where: { id: userId },
-    data: {
-      ...vFields.data,
-    },
-  });
+  if (user.email !== vFields.data.email) {
+    const existingUser = await getUserByEmail(vFields.data.email);
+    if (existingUser) {
+      return { error: "Email already in use!" };
+    }
+    await db.user.update({
+      where: { id: userId },
+      data: {
+        ...vFields.data,
+        emailVerified: null,
+      },
+    });
 
-  return { success: "User Profile Updated!" };
+    const verificationToken = await generateEmailVerificationToken(
+      vFields.data.email,
+    );
+
+    const { error } = await sendEmailVerificationToken(
+      verificationToken.email,
+      verificationToken.token,
+    );
+
+    if (error) {
+      return {
+        error:
+          "Something went wrong while sending verificaiton email! Try to login to resend the verificaiton email!",
+      };
+    }
+    return { success: "Verification email sent!" };
+  } else {
+    await db.user.update({
+      where: { id: userId },
+      data: {
+        ...vFields.data,
+      },
+    });
+
+    return { success: "User Profile Updated!" };
+  }
 };
