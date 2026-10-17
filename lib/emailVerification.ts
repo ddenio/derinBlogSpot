@@ -1,6 +1,7 @@
 import { db } from "./db";
 import { v4 as uuidv4 } from "uuid";
 import { Resend } from "resend";
+import { renderEmail } from "./emailTemplate";
 
 export const getVerificationTokenByEmail = async (email: string) => {
   try {
@@ -44,7 +45,14 @@ export const sendEmailVerificationToken = async (
     from: "onboarding@resend.dev",
     to: email,
     subject: "DerinSpot.BLOG Email Verification",
-    html: `<p>Click <a href="${emailVerificationLink}">here</a> to verify your email!</p>`,
+    html: renderEmail({
+      heading: "Verify your email",
+      body: "Welcome to DerinSpot.BLOG! Confirm your email address to activate your account and start reading and writing.",
+      buttonLabel: "Verify Email",
+      link: emailVerificationLink,
+      footnote:
+        "This link expires in 1 hour. If you didn't create an account, you can safely ignore this email.",
+    }),
   });
 
   if (res.error) {

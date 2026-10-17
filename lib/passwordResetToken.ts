@@ -1,6 +1,7 @@
 import { db } from "./db";
 import { v4 as uuidv4 } from "uuid";
 import { Resend } from "resend";
+import { renderEmail } from "./emailTemplate";
 
 export const getPasswordResetTokenByToken = async (token: string) => {
   try {
@@ -52,7 +53,14 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
     from: "onboarding@resend.dev",
     to: email,
     subject: "DerinSpot.BLOG Password Reset Link",
-    html: `<p>Click <a href="${resetLink}">here</a> to reset your password!</p>`,
+    html: renderEmail({
+      heading: "Reset your password",
+      body: "We received a request to reset the password for your DerinSpot.BLOG account. Click the button below to choose a new one.",
+      buttonLabel: "Reset Password",
+      link: resetLink,
+      footnote:
+        "If you didn't request a password reset, you can safely ignore this email. Your password won't change.",
+    }),
   });
 
   return { error: res.error };
