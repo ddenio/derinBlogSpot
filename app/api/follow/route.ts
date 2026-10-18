@@ -9,7 +9,7 @@ export async function POST(req: Request) {
     const userId = session?.user.userId; //follows other
     const followId = body.followId; //person being followed
 
-    if (!userId) return new NextResponse("Unauthorized", { status: 401 });
+    if (!userId) return NextResponse.json("Unauthorized", { status: 401 });
 
     if (!followId)
       return NextResponse.json({ error: "No user to follow" }, { status: 400 });
@@ -29,10 +29,8 @@ export async function POST(req: Request) {
 
     if (existingFollow) {
       //unfollow
-      await db.follow.delete({
-        where: {
-          followerId_followingId: { followerId: userId, followingId: followId },
-        },
+      await db.follow.deleteMany({
+        where: { followerId: userId, followingId: followId },
       });
       return NextResponse.json({ success: "unfollowed" });
     } else {

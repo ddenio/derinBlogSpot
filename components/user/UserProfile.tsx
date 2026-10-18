@@ -7,9 +7,45 @@ import Alert from "../common/Alert";
 import ListBlogs from "../blog/ListBlogs";
 import EditProfileButton from "./EditProfileButton";
 import Tag from "../common/Tag";
+import FollowButton from "./FollowButton";
+import { auth } from "@/auth";
+import FollowerList from "./FollowersList";
+import FollowingList from "./FollowingList";
 
-const UserProfile = async ({ user, page }: { user: User; page: string }) => {
+export type UserWithFollows = User & {
+  followers: {
+    follower: Pick<User, "id" | "name" | "image"> & {
+      followers: {
+        id: string;
+      }[];
+    };
+  }[];
+  followings: {
+    following: Pick<User, "id" | "name" | "image"> & {
+      followers: {
+        id: string;
+      }[];
+    };
+  }[];
+
+  _count: {
+    followers: number;
+    followings: number;
+  };
+};
+
+const UserProfile = async ({
+  user,
+  page,
+  isFollowing,
+}: {
+  user: UserWithFollows;
+  page: string;
+  isFollowing: boolean;
+}) => {
   const currentPage = parseInt(page, 10) || 1;
+  const session = await auth();
+  const userId = session?.user.userId;
 
   const { success, error } = await getBlogsByUserId({
     page: currentPage,
@@ -31,14 +67,17 @@ const UserProfile = async ({ user, page }: { user: User; page: string }) => {
             <h1 className="text-xl sm:text-3xl font-bold">{user.name}</h1>
             {user.bio && <p>{user.bio}</p>}
             <div className="flex items-center gap-4">
-              <span>Followers</span>
-              <span>Following</span>
+              <FollowerList user={user} currentUserId={userId} />
+              <FollowingList user={user} currentUserId={userId} />
             </div>
           </div>
         </div>
 
         <div>
-          <EditProfileButton user={user} />
+          {userId === user.id && <EditProfileButton user={user} />}
+          {userId !== user.id && (
+            <FollowButton user={user} isFollowing={isFollowing} />
+          )}
         </div>
       </div>
       <div className="flex gap-4 flex-col items-center justify-center p-6 border-y mt-6 flex-wrap">
