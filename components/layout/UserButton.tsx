@@ -24,6 +24,7 @@ const UserButton = () => {
     try {
       await signOut({ redirect: false });
       toast.success("Logged out successfully");
+      router.push("/login");
       router.refresh();
     } catch (error) {
       console.error(error);

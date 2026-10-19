@@ -81,7 +81,7 @@ const EditUserForm = ({
         if (res?.success) {
           toast.success(res.success);
           setTimeout(() => {
-            signOut();
+            signOut({ callbackUrl: "/login" });
           }, 4000);
         }
       } catch (error) {
