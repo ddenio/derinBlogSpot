@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { createNotification } from "@/actions/notifications/createNotification";
 
 const FollowButton = ({
   user,
@@ -32,9 +33,18 @@ const FollowButton = ({
 
       if (res.data.success === "followed") {
         setIsFollowing(true);
+        toast.success("User followed!");
+        if (user.id) {
+          await createNotification({
+            recipientId: user.id,
+            type: "FOLLOW",
+            entityType: "USER",
+          });
+        }
         //send a notification
       } else if (res.data.success === "unfollowed") {
         setIsFollowing(false);
+        toast.success("User unfollowed!");
       }
 
       router.refresh();

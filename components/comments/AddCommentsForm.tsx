@@ -8,6 +8,7 @@ import Button from "../common/Button";
 import TextAreaField from "../common/TextAreaField";
 import { addComment } from "@/actions/comments/add-comment";
 import { toast } from "react-hot-toast";
+import { createNotification } from "@/actions/notifications/createNotification";
 
 interface IAddCommentsProps {
   blogId: string;
@@ -56,6 +57,29 @@ const AddCommentsForm = ({
         }
 
         if (res.success) {
+          if (repliedToId) {
+            await createNotification({
+              recipientId: repliedToId,
+              type: "COMMENT_REPLY",
+              commentId: parentId,
+              entityType: "COMMENT",
+              content: data.content,
+            });
+
+            //send notification realtime
+          }
+
+          if (creatorId) {
+            await createNotification({
+              recipientId: creatorId,
+              type: "NEW_COMMENT",
+              blogId,
+              entityType: "BLOG",
+              content: data.content,
+            });
+
+            //send notification realtime
+          }
           toast.success(res.success);
           reset();
           onSuccess?.();

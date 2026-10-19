@@ -170,7 +170,8 @@ model Notification {
   recipientId String
   senderId String
   type NotificationType
-  entityId String?
+  blogId String?
+  commentId String?
   entityType EntityType?
   content String?
   isRead Boolean @default(false)
@@ -178,8 +179,9 @@ model Notification {
 
   recipient User @relation("NotificationReceived", fields: [recipientId], references: [id], onDelete: Cascade)
   sender User @relation("NotificationSent", fields: [senderId], references: [id], onDelete: Cascade)
-  blog Blog? @relation(fields: [entityId], references: [id], onDelete: Cascade, map: "Notification_blog_entityId_fkey")
-  comment Comment? @relation(fields: [entityId], references: [id], onDelete: Cascade, map: "Notification_comment_entityId_fkey")
+
+  blog Blog? @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  comment Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
 }
 
 enum NotificationType{
