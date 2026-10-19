@@ -26,6 +26,8 @@ model User {
   bookmarks Bookmark[]
   comments Comment[]
   repliedToComments Comment[] @relation("ReplyToUser")
+  receivedNotifications Notification[] @relation("NotificationReceived")
+  sentNotifications Notification[] @relation("NotificationSent")
  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -101,6 +103,7 @@ model Blog{
   claps Clap[]
   bookmarks Bookmark[]
   comments Comment[]
+  notification Notification[]
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
@@ -140,6 +143,7 @@ model Comment {
   content String
   createdAt DateTime @default(now())
   claps CommentClap[]
+  notification Notification[]
 
   blog Blog @relation(fields: [blogId], references: [id], onDelete: Cascade)
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -159,4 +163,36 @@ model CommentClap {
   comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
 
   @@unique([userId, commentId])
+}
+
+model Notification {
+  id String @id @default(cuid())
+  recipientId String
+  senderId String
+  type NotificationType
+  entityId String?
+  entityType EntityType?
+  content String?
+  isRead Boolean @default(false)
+  createdAt DateTime @default(now())
+
+  recipient User @relation("NotificationReceived", fields: [recipientId], references: [id], onDelete: Cascade)
+  sender User @relation("NotificationSent", fields: [senderId], references: [id], onDelete: Cascade)
+  blog Blog? @relation(fields: [entityId], references: [id], onDelete: Cascade, map: "Notification_blog_entityId_fkey")
+  comment Comment? @relation(fields: [entityId], references: [id], onDelete: Cascade, map: "Notification_comment_entityId_fkey")
+}
+
+enum NotificationType{
+  NEW_COMMENT
+  COMMENT_REPLY
+  NEW_CLAP
+  FOLLOW
+  SYSTEM_ALERT
+}
+
+enum EntityType {
+  BLOG
+  COMMENT
+  USER
+  SYSTEM
 }
