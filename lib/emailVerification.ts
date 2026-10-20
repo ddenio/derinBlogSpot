@@ -42,7 +42,7 @@ export const sendEmailVerificationToken = async (
   const emailVerificationLink = `${process.env.BASE_URL}/email-verification?token=${token}`;
 
   const res = await resend.emails.send({
-    from: "onboarding@resend.dev",
+    from: process.env.EMAIL_FROM ?? "onboarding@resend.dev",
     to: email,
     subject: "DerinSpot.BLOG Email Verification",
     html: renderEmail({

@@ -50,7 +50,7 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
   const resetLink = `${process.env.BASE_URL}/password-reset-form?token=${token}`;
 
   const res = await resend.emails.send({
-    from: "onboarding@resend.dev",
+    from: process.env.EMAIL_FROM ?? "onboarding@resend.dev",
     to: email,
     subject: "DerinSpot.BLOG Password Reset Link",
     html: renderEmail({
