@@ -16,6 +16,7 @@ import { toast } from "react-hot-toast";
 
 const UserButton = () => {
   const session = useSession();
+  const isAdmin = session.data?.user.role === "ADMIN";
   const imageUrl = session.data?.user.image || "";
   const router = useRouter();
 
@@ -70,11 +71,18 @@ const UserButton = () => {
           </button>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <button className="flex items-center gap-2 cursor-pointer">
-            <Shield size={18} /> Admin
-          </button>
-        </DropdownMenuItem>
+        {isAdmin && (
+          <>
+            <DropdownMenuItem>
+              <button
+                onClick={() => router.push("/admin")}
+                className="flex items-center gap-2 cursor-pointer"
+              >
+                <Shield size={18} /> Admin
+              </button>
+            </DropdownMenuItem>
+          </>
+        )}
         <DropdownMenuSeparator />
         <DropdownMenuItem>
           <button
