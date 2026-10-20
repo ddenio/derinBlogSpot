@@ -8,6 +8,7 @@ import { auth } from "@/auth";
 import { SessionProvider } from "next-auth/react";
 import { EdgeStoreProvider } from "@/lib/edgestore";
 import { Toaster } from "react-hot-toast";
+import { SocketContextProvider } from "@/context/SocketContext";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -39,39 +40,41 @@ export default async function RootLayout({
   return (
     <EdgeStoreProvider>
       <SessionProvider session={session}>
-        <html
-          lang="en"
-          suppressHydrationWarning
-          className={cn("font-sans", inter.variable)}
-        >
-          <body
-            className={cn(
-              "antialiased flex flex-col min-h-screen px-2",
-              roboto.variable,
-            )}
+        <SocketContextProvider>
+          <html
+            lang="en"
+            suppressHydrationWarning
+            className={cn("font-sans", inter.variable)}
           >
-            <Toaster
-              position="bottom-center"
-              toastOptions={{
-                style: {
-                  background: "rgb(51 65 85)",
-                  color: "#fff",
-                },
-              }}
-            />
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
+            <body
+              className={cn(
+                "antialiased flex flex-col min-h-screen px-2",
+                roboto.variable,
+              )}
             >
-              <NavBar />
-              <main className="flex-grow">{children}</main>
+              <Toaster
+                position="bottom-center"
+                toastOptions={{
+                  style: {
+                    background: "rgb(51 65 85)",
+                    color: "#fff",
+                  },
+                }}
+              />
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="system"
+                enableSystem
+                disableTransitionOnChange
+              >
+                <NavBar />
+                <main className="flex-grow">{children}</main>
 
-              <footer>...</footer>
-            </ThemeProvider>
-          </body>
-        </html>
+                <footer>...</footer>
+              </ThemeProvider>
+            </body>
+          </html>
+        </SocketContextProvider>
       </SessionProvider>
     </EdgeStoreProvider>
   );

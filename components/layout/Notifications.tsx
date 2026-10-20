@@ -98,9 +98,12 @@ const Notifications = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="relative cursor-pointer">
-        <div className="absolute bg-rose-500 h-6 w-6 rounded-full text-sm flex items-center justify-center bottom-2 left-2">
-          <span>{unreadCount}</span>
-        </div>
+        {!!unreadCount && (
+          <div className="absolute bg-rose-500 h-6 w-6 rounded-full text-sm flex items-center justify-center bottom-2 left-2">
+            <span>{unreadCount}</span>
+          </div>
+        )}
+
         <Bell size={20} />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-full max-w-100">
