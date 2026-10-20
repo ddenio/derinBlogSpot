@@ -18,6 +18,7 @@ import {
   markAllNotificationsAsRead,
   markNotificationAsRead,
 } from "@/actions/notifications/markAsRead";
+import { useSocket } from "@/context/SocketContext";
 
 export type LatestNotifications = Notification & {
   sender: Pick<User, "id" | "name">;
@@ -35,6 +36,7 @@ const Notifications = () => {
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { refetchNotifications, handleRefetchNotifications } = useSocket();
 
   // Refetch when the signed-in user changes or the page changes, so a fresh
   // login (no full reload) or a new notification shows up without a refresh
@@ -73,7 +75,7 @@ const Notifications = () => {
     return () => {
       cancelled = true;
     };
-  }, [userId, pathname]);
+  }, [userId, pathname, refetchNotifications]);
 
   const handleOpen = async (n: LatestNotifications) => {
     if (n.entityType === "BLOG" && n.blogId) {
@@ -89,10 +91,12 @@ const Notifications = () => {
     }
 
     await markNotificationAsRead(n.id);
+    handleRefetchNotifications();
   };
 
   const markAllAsRead = async () => {
     await markAllNotificationsAsRead();
+    handleRefetchNotifications();
   };
 
   return (

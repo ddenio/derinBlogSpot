@@ -16,8 +16,38 @@ app.prepare().then(() => {
 
   io = new Server(httpServer);
 
+  let onlineUsers = new Map();
+
   io.on("connection", (socket) => {
-    console.log("connected>>>>", socket);
+    socket.on("addOnlineUser", (userId) => {
+      if (userId && !onlineUsers.has(userId)) {
+        onlineUsers.set(userId, {
+          userId,
+          socketId: socket.id,
+        });
+      }
+
+      console.log("Current Online Users:", Array.from(onlineUsers.entries()));
+    });
+
+    socket.on("onNotification", (recipientId) => {
+      const recipient = onlineUsers.get(recipientId);
+
+      if (recipient) {
+        io.to(recipient.socketId).emit("getNotifications");
+      } else {
+        console.log(`Recipient with ID ${recipientId} is not online`);
+      }
+    });
+
+    socket.on("disconnect", () => {
+      onlineUsers.forEach((value, key) => {
+        if (value.socketId === socket.id) {
+          console.log("disconnected", key, value.socketId, socket.id);
+          onlineUsers.delete(key);
+        }
+      });
+    });
   });
 
   httpServer
