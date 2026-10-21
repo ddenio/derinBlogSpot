@@ -59,13 +59,12 @@ const CreateBlogForm = ({ blog }: { blog?: Blog }) => {
   });
 
   useEffect(() => {
-    if (uploadedCover) {
-      setValue("coverImage", uploadedCover, {
-        shouldValidate: true,
-        shouldDirty: true,
-        shouldTouch: true,
-      });
-    }
+    // Also runs when the cover is removed (uploadedCover === undefined)
+    setValue("coverImage", uploadedCover, {
+      shouldValidate: true,
+      shouldDirty: true,
+      shouldTouch: true,
+    });
   }, [uploadedCover, setValue]);
 
   useEffect(() => {

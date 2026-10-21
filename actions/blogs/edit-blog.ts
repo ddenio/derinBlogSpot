@@ -36,7 +36,14 @@ export const editBlog = async (values: BlogSchemaType, blogId: string) => {
   // Only whitelisted fields are updated; ownership (userId) can never change
   await db.blog.update({
     where: { id: blogId },
-    data: { title, content, coverImage, isPublished, tags },
+    // `|| null` so removing the cover really clears it (undefined = unchanged)
+    data: {
+      title,
+      content,
+      coverImage: coverImage || null,
+      isPublished,
+      tags,
+    },
   });
 
   return { success: "Blog Updated" };

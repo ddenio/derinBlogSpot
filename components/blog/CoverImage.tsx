@@ -21,10 +21,12 @@ const CoverImage = ({ url, isEditor, setUploadedCover }: CoverImageProps) => {
     setIsRemoving(true);
     try {
       await edgestore.publicFiles.delete({ url });
-      setUploadedCover(undefined);
     } catch (error) {
-      console.log(error);
+      // The file may already be gone or not deletable by this user; either
+      // way the cover should still be removed from the post.
+      console.log("Cover file delete failed:", error);
     } finally {
+      setUploadedCover(undefined);
       setIsRemoving(false);
     }
   };

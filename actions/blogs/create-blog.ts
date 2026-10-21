@@ -27,7 +27,14 @@ export const createBlog = async (values: BlogSchemaType) => {
 
   // The author is always the logged-in user, never a client-supplied id
   await db.blog.create({
-    data: { userId, title, content, coverImage, isPublished, tags },
+    data: {
+      userId,
+      title,
+      content,
+      coverImage: coverImage || null,
+      isPublished,
+      tags,
+    },
   });
 
   if (isPublished) {
