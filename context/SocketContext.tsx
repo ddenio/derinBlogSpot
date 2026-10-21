@@ -8,95 +8,54 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { io, Socket } from "socket.io-client";
+import { io } from "socket.io-client";
 
 interface iSocketContext {
   refetchNotifications: boolean;
-  sendNotification: (recipientId: string) => void;
   handleRefetchNotifications: () => void;
 }
 
 export const SocketContext = createContext<iSocketContext | null>(null);
 
+// The socket is receive-only: the server identifies the user from their
+// session cookie and pushes a "getNotifications" ping when a notification is
+// saved for them. The browser never tells the server who it is or who to ping.
 export const SocketContextProvider = ({
   children,
 }: {
   children: React.ReactNode;
 }) => {
   const session = useSession();
-  const user = session.data?.user;
-  const userId = user?.userId;
-  const [socket, setSocket] = useState<Socket | null>(null);
-  const [isSocketConnected, setIsSocketConnected] = useState(false);
+  const userId = session.data?.user?.userId;
   const [refetchNotifications, setRefetchNotifications] = useState(true);
 
-  const sendNotification = useCallback(
-    (recipientId: string) => {
-      if (userId && socket && isSocketConnected) {
-        socket.emit("onNotification", recipientId);
-      }
-    },
-    [userId, socket, isSocketConnected],
-  );
-
-  const handleRefetchNotifications = () => {
+  const handleRefetchNotifications = useCallback(() => {
     setRefetchNotifications((prev) => !prev);
-  };
+  }, []);
 
+  // Keyed on the id string: the session object changes identity whenever
+  // Auth.js refreshes it (e.g. on window focus), which would otherwise tear
+  // down and recreate the socket each time.
   useEffect(() => {
-    // Keyed on the id string: the session object changes identity whenever
-    // Auth.js refreshes it (e.g. on window focus), which used to tear down
-    // and recreate the socket each time.
     if (!userId) return;
 
-    const newSocket = io();
-    setSocket(newSocket);
+    const socket = io();
+
+    // Refetch on every (re)connect so nothing sent while offline is missed
+    socket.on("connect", handleRefetchNotifications);
+    socket.on("getNotifications", handleRefetchNotifications);
 
     return () => {
-      newSocket.disconnect();
+      socket.off("connect", handleRefetchNotifications);
+      socket.off("getNotifications", handleRefetchNotifications);
+      socket.disconnect();
     };
-  }, [userId]);
-
-  //listen for connection
-  useEffect(() => {
-    if (socket === null) return;
-
-    function onConnect() {
-      setIsSocketConnected(true);
-      console.log("new connection>>>>");
-    }
-
-    function onDisconnect() {
-      setIsSocketConnected(false);
-    }
-
-    function onNotification() {
-      handleRefetchNotifications();
-    }
-
-    socket.on("connect", onConnect);
-    socket.on("disconnect", onDisconnect);
-    socket.on("getNotifications", onNotification);
-
-    return () => {
-      socket.off("connect", onConnect);
-      socket.off("disconnect", onDisconnect);
-      socket.off("getNotifications", onNotification);
-    };
-  }, [socket]);
-
-  //set up online users
-  useEffect(() => {
-    if (!socket || !isSocketConnected || !userId) return;
-
-    socket.emit("addOnlineUser", userId);
-  }, [socket, isSocketConnected, userId]);
+  }, [userId, handleRefetchNotifications]);
 
   return (
     <SocketContext.Provider
       value={{
         refetchNotifications,
-        sendNotification,
         handleRefetchNotifications,
       }}
     >

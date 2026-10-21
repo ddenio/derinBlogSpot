@@ -9,7 +9,6 @@ import TextAreaField from "../common/TextAreaField";
 import { addComment } from "@/actions/comments/add-comment";
 import { toast } from "react-hot-toast";
 import { createNotification } from "@/actions/notifications/createNotification";
-import { useSocket } from "@/context/SocketContext";
 
 interface IAddCommentsProps {
   blogId: string;
@@ -30,7 +29,6 @@ const AddCommentsForm = ({
   onSuccess,
 }: IAddCommentsProps) => {
   const [isPending, startTransition] = useTransition();
-  const { sendNotification } = useSocket();
 
   const {
     register,
@@ -65,9 +63,6 @@ const AddCommentsForm = ({
               entityType: "COMMENT",
               content: data.content,
             });
-
-            //send notification realtime
-            sendNotification(repliedToId);
           }
 
           if (creatorId) {
@@ -78,9 +73,6 @@ const AddCommentsForm = ({
               entityType: "BLOG",
               content: data.content,
             });
-
-            //send notification realtime
-            sendNotification(creatorId);
           }
           toast.success(res.success);
           reset();

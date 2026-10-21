@@ -3,6 +3,7 @@
 import { auth } from "@/auth";
 import { EntityType, NotificationType } from "@/generated/prisma/enums";
 import { db } from "@/lib/db";
+import { notifyUser } from "@/lib/notifyUser";
 
 export const createNotification = async ({
   recipientId,
@@ -114,6 +115,7 @@ export const createNotification = async ({
           data: { isRead: false, createdAt: new Date() },
         });
       }
+      notifyUser(recipientId);
       return { success: "Notification sent!" };
     }
   }
@@ -131,6 +133,9 @@ export const createNotification = async ({
         content: type === "SYSTEM_ALERT" ? content : undefined,
       },
     });
+
+    // Live ping to the recipient's open tabs, sent by the server itself
+    notifyUser(recipientId);
 
     return { success: "Notification sent!" };
   } catch (error) {

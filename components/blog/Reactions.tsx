@@ -9,7 +9,6 @@ import { useSession } from "next-auth/react";
 import { clapBlog } from "@/actions/blogs/clap-blog";
 import { useRouter } from "next/navigation";
 import { createNotification } from "@/actions/notifications/createNotification";
-import { useSocket } from "@/context/SocketContext";
 
 const Reactions = ({ blog }: { blog: BlogWithUser }) => {
   const session = useSession();
@@ -17,7 +16,6 @@ const Reactions = ({ blog }: { blog: BlogWithUser }) => {
   const [clapCount, setClapCount] = useState(blog._count.claps);
   const [userHasClapped, setUserHasClapped] = useState(!!blog.claps.length);
   const router = useRouter();
-  const { sendNotification } = useSocket();
 
   const handleClap = async () => {
     if (!userId) return;
@@ -37,7 +35,6 @@ const Reactions = ({ blog }: { blog: BlogWithUser }) => {
         blogId: blog.id,
         entityType: "BLOG",
       });
-      sendNotification(blog.userId);
     }
 
     router.refresh();
