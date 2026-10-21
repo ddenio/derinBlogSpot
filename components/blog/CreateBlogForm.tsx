@@ -176,8 +176,6 @@ const CreateBlogForm = ({ blog }: { blog?: Blog }) => {
     });
   };
 
-  console.log("errors >>>", errors);
-
   return (
     <form
       onSubmit={handleSubmit(onPublish)}

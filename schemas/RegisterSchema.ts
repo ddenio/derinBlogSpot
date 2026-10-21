@@ -1,3 +1,4 @@
+import "@/lib/zodBrowserConfig";
 import { z } from "zod";
 import { NewPasswordSchema } from "./PasswordRule";
 

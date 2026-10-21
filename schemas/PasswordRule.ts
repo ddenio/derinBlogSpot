@@ -1,3 +1,4 @@
+import "@/lib/zodBrowserConfig";
 import { z } from "zod";
 
 // Rule for CHOOSING a password (register + reset). Login deliberately does

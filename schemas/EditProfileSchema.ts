@@ -1,3 +1,4 @@
+import "@/lib/zodBrowserConfig";
 import { z } from "zod";
 
 export const EditProfileSchema = z.object({
