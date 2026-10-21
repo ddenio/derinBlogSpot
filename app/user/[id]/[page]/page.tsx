@@ -14,7 +14,14 @@ const Profile = async ({
 
   const user = await db.user.findUnique({
     where: { id },
-    include: {
+    // Explicit select: never load email, password hash, etc. for a public page
+    select: {
+      id: true,
+      name: true,
+      image: true,
+      bio: true,
+      tags: true,
+      createdAt: true,
       followers: {
         include: {
           follower: {

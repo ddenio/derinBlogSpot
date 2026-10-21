@@ -25,7 +25,16 @@ const EditUser = async ({ params }: { params: Promise<{ id: string }> }) => {
 
   const isCredentials = !isOAuth;
 
-  return <EditUserForm user={user} isCredentials={isCredentials} />;
+  // Only pass what the form needs to the client; never the password hash
+  const formUser = {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    bio: user.bio,
+    tags: user.tags,
+  };
+
+  return <EditUserForm user={formUser} isCredentials={isCredentials} />;
 };
 
 export default EditUser;

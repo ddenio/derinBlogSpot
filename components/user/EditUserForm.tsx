@@ -34,7 +34,7 @@ const EditUserForm = ({
   user,
   isCredentials,
 }: {
-  user: User;
+  user: Pick<User, "id" | "name" | "email" | "bio" | "tags">;
   isCredentials: boolean;
 }) => {
   const [confirmOpen, setConfirmOpen] = useState(false);

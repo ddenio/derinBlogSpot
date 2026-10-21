@@ -12,7 +12,10 @@ import { auth } from "@/auth";
 import FollowerList from "./FollowersList";
 import FollowingList from "./FollowingList";
 
-export type UserWithFollows = User & {
+export type UserWithFollows = Pick<
+  User,
+  "id" | "name" | "image" | "bio" | "tags" | "createdAt"
+> & {
   followers: {
     follower: Pick<User, "id" | "name" | "image"> & {
       followers: {
@@ -81,20 +84,6 @@ const UserProfile = async ({
         </div>
       </div>
       <div className="flex gap-4 flex-col items-center justify-center p-6 border-y mt-6 flex-wrap">
-        <div className="flex items-center justify-center gap-6 flex-wrap">
-          <span>
-            Id:{" "}
-            <span className="bg-secondary ml-2 py-1 px-2 rounded">
-              {user.id}
-            </span>
-          </span>
-          <span>
-            Email:{" "}
-            <span className="bg-secondary ml-2 py-1 px-2 rounded">
-              {user.email}
-            </span>
-          </span>
-        </div>
         <div className="flex justify-center items-center gap-2">
           <Calendar size={18} /> Member Since:{" "}
           {moment(user.createdAt).format("MMMM Do YYYY")}
