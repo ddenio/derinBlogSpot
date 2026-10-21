@@ -16,37 +16,42 @@ app.prepare().then(() => {
 
   io = new Server(httpServer);
 
-  let onlineUsers = new Map();
+  // userId -> set of socket ids. A user can have several tabs/devices open,
+  // and a reconnect must never be wiped out by the old socket disconnecting.
+  const onlineUsers = new Map();
 
   io.on("connection", (socket) => {
     socket.on("addOnlineUser", (userId) => {
-      if (userId && !onlineUsers.has(userId)) {
-        onlineUsers.set(userId, {
-          userId,
-          socketId: socket.id,
-        });
-      }
+      if (typeof userId !== "string" || !userId) return;
 
-      console.log("Current Online Users:", Array.from(onlineUsers.entries()));
+      socket.data.userId = userId;
+
+      if (!onlineUsers.has(userId)) onlineUsers.set(userId, new Set());
+      onlineUsers.get(userId).add(socket.id);
+
+      console.log("Online users:", onlineUsers.size);
     });
 
     socket.on("onNotification", (recipientId) => {
-      const recipient = onlineUsers.get(recipientId);
+      const sockets = onlineUsers.get(recipientId);
 
-      if (recipient) {
-        io.to(recipient.socketId).emit("getNotifications");
+      if (sockets && sockets.size) {
+        sockets.forEach((socketId) => {
+          io.to(socketId).emit("getNotifications");
+        });
       } else {
-        console.log(`Recipient with ID ${recipientId} is not online`);
+        console.log(`Recipient ${recipientId} is not online`);
       }
     });
 
     socket.on("disconnect", () => {
-      onlineUsers.forEach((value, key) => {
-        if (value.socketId === socket.id) {
-          console.log("disconnected", key, value.socketId, socket.id);
-          onlineUsers.delete(key);
-        }
-      });
+      const userId = socket.data.userId;
+      const sockets = userId && onlineUsers.get(userId);
+
+      if (sockets) {
+        sockets.delete(socket.id);
+        if (!sockets.size) onlineUsers.delete(userId);
+      }
     });
   });
 

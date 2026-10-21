@@ -96,6 +96,28 @@ export const createNotification = async ({
       return { error: "Invalid notification type!" };
   }
 
+  // Clapping/following repeatedly shouldn't spam the same notification
+  if (type === "NEW_CLAP" || type === "FOLLOW") {
+    const existing = await db.notification.findFirst({
+      where: {
+        senderId,
+        recipientId,
+        type,
+        blogId: blogId ?? null,
+      },
+    });
+
+    if (existing) {
+      if (existing.isRead) {
+        await db.notification.update({
+          where: { id: existing.id },
+          data: { isRead: false, createdAt: new Date() },
+        });
+      }
+      return { success: "Notification sent!" };
+    }
+  }
+
   try {
     await db.notification.create({
       data: {

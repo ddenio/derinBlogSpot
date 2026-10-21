@@ -8,6 +8,8 @@ import { BlogWithUser } from "./ListBlogs";
 import { useSession } from "next-auth/react";
 import { clapBlog } from "@/actions/blogs/clap-blog";
 import { useRouter } from "next/navigation";
+import { createNotification } from "@/actions/notifications/createNotification";
+import { useSocket } from "@/context/SocketContext";
 
 const Reactions = ({ blog }: { blog: BlogWithUser }) => {
   const session = useSession();
@@ -15,6 +17,7 @@ const Reactions = ({ blog }: { blog: BlogWithUser }) => {
   const [clapCount, setClapCount] = useState(blog._count.claps);
   const [userHasClapped, setUserHasClapped] = useState(!!blog.claps.length);
   const router = useRouter();
+  const { sendNotification } = useSocket();
 
   const handleClap = async () => {
     if (!userId) return;
@@ -24,7 +27,19 @@ const Reactions = ({ blog }: { blog: BlogWithUser }) => {
     );
     setUserHasClapped((prevState) => !prevState);
 
-    await clapBlog(blog.id);
+    const res = await clapBlog(blog.id);
+
+    // Only notify the author on a new clap (not an unclap, not your own post)
+    if (res.success === "Clapped!" && blog.userId !== userId) {
+      await createNotification({
+        recipientId: blog.userId,
+        type: "NEW_CLAP",
+        blogId: blog.id,
+        entityType: "BLOG",
+      });
+      sendNotification(blog.userId);
+    }
+
     router.refresh();
   };
 

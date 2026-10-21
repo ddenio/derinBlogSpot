@@ -25,17 +25,18 @@ export const SocketContextProvider = ({
 }) => {
   const session = useSession();
   const user = session.data?.user;
+  const userId = user?.userId;
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isSocketConnected, setIsSocketConnected] = useState(false);
   const [refetchNotifications, setRefetchNotifications] = useState(true);
 
   const sendNotification = useCallback(
     (recipientId: string) => {
-      if (user && socket && isSocketConnected) {
+      if (userId && socket && isSocketConnected) {
         socket.emit("onNotification", recipientId);
       }
     },
-    [user, socket, isSocketConnected],
+    [userId, socket, isSocketConnected],
   );
 
   const handleRefetchNotifications = () => {
@@ -43,7 +44,10 @@ export const SocketContextProvider = ({
   };
 
   useEffect(() => {
-    if (!user) return;
+    // Keyed on the id string: the session object changes identity whenever
+    // Auth.js refreshes it (e.g. on window focus), which used to tear down
+    // and recreate the socket each time.
+    if (!userId) return;
 
     const newSocket = io();
     setSocket(newSocket);
@@ -51,7 +55,7 @@ export const SocketContextProvider = ({
     return () => {
       newSocket.disconnect();
     };
-  }, [user]);
+  }, [userId]);
 
   //listen for connection
   useEffect(() => {
@@ -83,10 +87,10 @@ export const SocketContextProvider = ({
 
   //set up online users
   useEffect(() => {
-    if (!socket || !isSocketConnected || !user) return;
+    if (!socket || !isSocketConnected || !userId) return;
 
-    socket.emit("addOnlineUser", user.userId);
-  }, [socket, isSocketConnected, user]);
+    socket.emit("addOnlineUser", userId);
+  }, [socket, isSocketConnected, userId]);
 
   return (
     <SocketContext.Provider
