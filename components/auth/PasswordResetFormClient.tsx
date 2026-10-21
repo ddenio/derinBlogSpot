@@ -61,6 +61,11 @@ const PasswordResetFormClient = () => {
         type="password"
         disabled={isPending}
       />
+
+      <p className="-mt-1 text-xs text-muted-foreground">
+        Use at least 10 characters. A few random words strung together make a
+        strong password that&apos;s easy to remember.
+      </p>
       <FormField
         id="confirmPassword"
         register={register}

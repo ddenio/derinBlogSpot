@@ -1,10 +1,9 @@
 import { z } from "zod";
+import { NewPasswordSchema } from "./PasswordRule";
 
 export const PasswordResetSchema = z
   .object({
-    password: z
-      .string()
-      .min(6, { message: "password must be 6 or more characters long!" }),
+    password: NewPasswordSchema,
     confirmPassword: z.string(),
   })
   .refine(

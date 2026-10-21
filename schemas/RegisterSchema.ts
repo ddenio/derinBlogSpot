@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { NewPasswordSchema } from "./PasswordRule";
 
 export const RegisterSchema = z
   .object({
@@ -7,9 +8,7 @@ export const RegisterSchema = z
       .min(4, "name must be 4 or more characters long")
       .max(30, "name must be 30 or fewer characters long"),
     email: z.string().email(),
-    password: z
-      .string()
-      .min(6, { message: "password must be 6 or more characters long!" }),
+    password: NewPasswordSchema,
     confirmPassword: z.string(),
   })
   .refine(
