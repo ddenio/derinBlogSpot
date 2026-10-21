@@ -73,6 +73,9 @@ model EmailVerificationToken{
   email String 
   token String @unique
   expires DateTime
+  // Set only for "change my email" tokens: the user asking to switch to `email`.
+  // Null for normal sign-up verification tokens.
+  userId String?
 
   @@unique([email, token])
 }

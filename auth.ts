@@ -6,7 +6,7 @@ import authConfig from "./auth.config";
 
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { db } from "./lib/db";
-import { getUserByEmail } from "./lib/user";
+import { getUserByEmail, getUserById } from "./lib/user";
 import { LoginSchema } from "./schemas/LoginSchema";
 import bcrypt from "bcryptjs";
 import {
@@ -88,12 +88,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ],
   callbacks: {
     async jwt({ token }) {
-      if (!token.email) return token;
-
-      const user = await getUserByEmail(token.email);
+      // Look the user up by id once we have it: the email can change (after a
+      // confirmed email change), but the id never does.
+      const user = token.userId
+        ? await getUserById(token.userId as string)
+        : token.email
+          ? await getUserByEmail(token.email)
+          : null;
 
       if (!user) return token;
 
+      token.email = user.email;
       token.role = user.role;
       token.userId = user.id;
 

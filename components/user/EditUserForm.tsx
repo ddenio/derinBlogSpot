@@ -116,6 +116,12 @@ const EditUserForm = ({
             label="Email"
           />
         )}
+        {isCredentials && (
+          <p className="-mt-1 text-xs text-muted-foreground">
+            Changing your email sends a confirmation link to the new address.
+            Your email stays the same until you click it.
+          </p>
+        )}
         <FormField
           id="bio"
           register={register}

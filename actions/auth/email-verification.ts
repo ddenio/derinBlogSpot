@@ -15,6 +15,39 @@ export const verifyEmail = async (token: string) => {
 
   if (isExpired) return { error: "Verification token expired!" };
 
+  // "Change my email" token: switch the account over only now, after the
+  // owner of the NEW inbox has clicked the link.
+  if (emailVerificationToken.userId) {
+    const requester = await db.user.findUnique({
+      where: { id: emailVerificationToken.userId },
+      select: { id: true },
+    });
+
+    if (!requester) return { error: "User does not exist!" };
+
+    const takenBy = await getUserByEmail(emailVerificationToken.email);
+
+    if (takenBy && takenBy.id !== requester.id) {
+      return { error: "That email address is already in use by another account." };
+    }
+
+    try {
+      await db.user.update({
+        where: { id: requester.id },
+        data: { email: emailVerificationToken.email, emailVerified: new Date() },
+      });
+    } catch {
+      return { error: "Couldn't update your email. Please try again." };
+    }
+
+    // One use only, so an old link can't switch the address back later
+    await db.emailVerificationToken
+      .delete({ where: { id: emailVerificationToken.id } })
+      .catch(() => {});
+
+    return { success: "Your new email address is confirmed!" };
+  }
+
   const existingUser = await getUserByEmail(emailVerificationToken.email);
 
   if (!existingUser) return { error: "User does not exist!" };
