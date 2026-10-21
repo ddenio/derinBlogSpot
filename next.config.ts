@@ -2,14 +2,18 @@ import type { NextConfig } from "next";
 
 const isDev = process.env.NODE_ENV !== "production";
 
-// Full Content Security Policy, sent in REPORT-ONLY mode for now: browsers
-// log what it would block (DevTools console: "[Report Only] Refused to ...")
-// but don't block anything. Once the console is clean on the real site, move
-// these rules into `enforcedCsp` below.
-const reportOnlyCsp = [
+// Content Security Policy: the browser only loads scripts, images and
+// connections from the sources listed here.
+//
+// If something on the site stops loading after a change, DevTools > Console
+// shows "Refused to load ... because it violates the Content Security Policy
+// directive ..." naming the blocked source; add that source to the matching
+// directive below.
+const csp = [
   "default-src 'self'",
   // Next.js injects inline scripts for hydration; 'unsafe-eval' is only
-  // needed by the dev server.
+  // needed by the dev server. (Zod's JIT parser, which would also need eval,
+  // is turned off in the browser by lib/zodBrowserConfig.ts.)
   `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
   // Mantine/BlockNote and Tailwind use inline styles
   "style-src 'self' 'unsafe-inline'",
@@ -21,18 +25,13 @@ const reportOnlyCsp = [
   "connect-src 'self' ws: wss: https://files.edgestore.dev https://*.edgestore.dev https://*.amazonaws.com",
   "worker-src 'self' blob:",
   "frame-src 'self'",
-].join("; ");
-
-// Directives that can't break normal pages, so they're enforced right away
-const enforcedCsp = [
   "frame-ancestors 'none'", // nobody can embed the site in an iframe
   "base-uri 'self'",
   "object-src 'none'",
 ].join("; ");
 
 const securityHeaders = [
-  { key: "Content-Security-Policy", value: enforcedCsp },
-  { key: "Content-Security-Policy-Report-Only", value: reportOnlyCsp },
+  { key: "Content-Security-Policy", value: csp },
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "X-Frame-Options", value: "DENY" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
