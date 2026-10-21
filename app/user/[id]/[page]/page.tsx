@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import Alert from "@/components/common/Alert";
+import ErrorPage from "@/components/common/ErrorPage";
 import UserProfile from "@/components/user/UserProfile";
 import { db } from "@/lib/db";
 
@@ -62,7 +62,13 @@ const Profile = async ({
     },
   });
 
-  if (!user) return <Alert error message="User Not found!" />;
+  if (!user) return (
+    <ErrorPage
+      variant="notFound"
+      title="User not found"
+      message="This profile doesn't exist."
+    />
+  );
 
   const follow = await db.follow.findFirst({
     where: {

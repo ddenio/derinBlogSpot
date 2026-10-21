@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 import AdminDashboard from "@/components/admin/AdminDashboard";
-import Alert from "@/components/common/Alert";
+import ErrorPage from "@/components/common/ErrorPage";
 import Container from "@/components/layout/Container";
 
 const Admin = async () => {
@@ -11,7 +11,11 @@ const Admin = async () => {
   if (!isAdmin)
     return (
       <Container>
-        <Alert error message="Access Denied" />
+        <ErrorPage
+          variant="forbidden"
+          title="Admins only"
+          message="This area is only available to site administrators."
+        />
       </Container>
     );
 

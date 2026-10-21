@@ -3,7 +3,7 @@ import { auth } from "@/auth";
 import BlogContentViewer from "@/components/blog/editor/BlogContentViewer";
 import Reactions from "@/components/blog/Reactions";
 import UserSummary from "@/components/blog/UserSummary";
-import Alert from "@/components/common/Alert";
+import ErrorPage from "@/components/common/ErrorPage";
 import Tag from "@/components/common/Tag";
 import { buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -28,11 +28,23 @@ const BlogContent = async ({ params }: BlogContentProps) => {
   const res = await getBlogById({ blogId: id });
 
   if (!res.success)
-    return <Alert error message="Error fetching blog content!" />;
+    return (
+      <ErrorPage
+        variant="notFound"
+        title="Post not found"
+        message="This post doesn't exist or isn't available to you."
+      />
+    );
 
   const blog = res.success.blog;
 
-  if (!blog) return <Alert error message="No Blog found!" />;
+  if (!blog) return (
+    <ErrorPage
+      variant="notFound"
+      title="Post not found"
+      message="This post doesn't exist or isn't available to you."
+    />
+  );
 
   return (
     <div className="flex flex-col max-w-225 m-auto gap-6">

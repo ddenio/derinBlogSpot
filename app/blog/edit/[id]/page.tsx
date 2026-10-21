@@ -1,7 +1,7 @@
 import { getBlogById } from "@/actions/blogs/getblogbyid";
 import { auth } from "@/auth";
 import CreateBlogForm from "@/components/blog/CreateBlogForm";
-import Alert from "@/components/common/Alert";
+import ErrorPage from "@/components/common/ErrorPage";
 import Container from "@/components/layout/Container";
 
 interface BlogEditProps {
@@ -13,16 +13,34 @@ const BlogEdit = async ({ params }: BlogEditProps) => {
 
   const res = await getBlogById({ blogId: id });
 
-  if (!res.success) return <Alert error message="Error getting blog" />;
+  if (!res.success) return (
+    <ErrorPage
+      variant="notFound"
+      title="Post not found"
+      message="This post doesn't exist or isn't available to you."
+    />
+  );
 
   const blog = res.success.blog;
 
-  if (!blog) return <Alert error message="No blog was found" />;
+  if (!blog) return (
+    <ErrorPage
+      variant="notFound"
+      title="Post not found"
+      message="This post doesn't exist or isn't available to you."
+    />
+  );
 
   const session = await auth();
 
   if (session?.user.userId !== blog.userId)
-    return <Alert error message="Not authorized!" />;
+    return (
+      <ErrorPage
+        variant="forbidden"
+        title="You can't edit this post"
+        message="Only the author can edit a post."
+      />
+    );
 
   return (
     <Container>

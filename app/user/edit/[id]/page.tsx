@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import Alert from "@/components/common/Alert";
+import ErrorPage from "@/components/common/ErrorPage";
 import EditUserForm from "@/components/user/EditUserForm";
 import { db } from "@/lib/db";
 import { getUserById } from "@/lib/user";
@@ -9,12 +9,24 @@ const EditUser = async ({ params }: { params: Promise<{ id: string }> }) => {
 
   const user = await getUserById(id);
 
-  if (!user) return <Alert error message="User not found!" />;
+  if (!user) return (
+    <ErrorPage
+      variant="notFound"
+      title="User not found"
+      message="This profile doesn't exist."
+    />
+  );
 
   const session = await auth();
 
   if (session?.user.userId !== user.id)
-    return <Alert error message="Not authorized!" />;
+    return (
+      <ErrorPage
+        variant="forbidden"
+        title="You can't edit this profile"
+        message="You can only edit your own profile."
+      />
+    );
 
   const account = await db.account.findFirst({
     where: { userId: user.id },
