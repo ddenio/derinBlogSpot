@@ -9,6 +9,12 @@ import { db } from "./lib/db";
 import { getUserByEmail } from "./lib/user";
 import { LoginSchema } from "./schemas/LoginSchema";
 import bcrypt from "bcryptjs";
+import {
+  MINUTE,
+  ipFromHeaders,
+  rateLimit,
+  resetRateLimit,
+} from "./lib/rateLimit";
 
 declare module "next-auth" {
   interface Session {
@@ -41,7 +47,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
     Credentials({
-      async authorize(credentials) {
+      async authorize(credentials, request) {
         const validatedFields = LoginSchema.safeParse(credentials);
 
         if (!validatedFields.success) {
@@ -50,14 +56,33 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         const { email, password } = validatedFields.data;
 
+        // This is the real login gate: anyone can POST straight to Auth.js and
+        // skip the login server action, so throttle here as well.
+        const emailKey = `auth:email:${email.toLowerCase()}`;
+        const byEmail = rateLimit(emailKey, 10, 15 * MINUTE);
+        const byIp = rateLimit(
+          `auth:ip:${ipFromHeaders(request.headers)}`,
+          50,
+          15 * MINUTE,
+        );
+
+        if (!byEmail.ok || !byIp.ok) return null;
+
         const user = await getUserByEmail(email);
 
         if (!user || !user.password) return null;
 
         const isCorrectPassword = await bcrypt.compare(password, user.password);
 
-        if (isCorrectPassword) return user;
-        return null;
+        if (!isCorrectPassword) return null;
+
+        // Unverified accounts must verify their email first, even when the
+        // login server action is bypassed.
+        if (!user.emailVerified) return null;
+
+        resetRateLimit(emailKey);
+
+        return user;
       },
     }),
   ],

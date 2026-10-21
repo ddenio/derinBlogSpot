@@ -6,6 +6,13 @@ import { RegisterSchema, RegisterSchemaType } from "@/schemas/RegisterSchema";
 import { db } from "@/lib/db";
 import { getUserByEmail } from "@/lib/user";
 import {
+  HOUR,
+  ipFromHeaders,
+  rateLimit,
+  tooManyMessage,
+} from "@/lib/rateLimit";
+import { headers } from "next/headers";
+import {
   generateEmailVerificationToken,
   sendEmailVerificationToken,
 } from "@/lib/emailVerification";
@@ -18,6 +25,17 @@ export const signUp = async (values: RegisterSchemaType) => {
   }
 
   const { name, email, password } = validateFields.data;
+
+  // Each sign-up sends an email, so limit how many one person/address can start
+  const ip = ipFromHeaders(await headers());
+  const byIp = rateLimit(`register:ip:${ip}`, 5, HOUR);
+  const byEmail = rateLimit(`register:email:${email.toLowerCase()}`, 3, HOUR);
+
+  if (!byIp.ok || !byEmail.ok) {
+    return {
+      error: tooManyMessage(Math.max(byIp.retryAfterSec, byEmail.retryAfterSec)),
+    };
+  }
 
   const user = await getUserByEmail(email);
 

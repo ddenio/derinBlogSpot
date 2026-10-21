@@ -7,6 +7,7 @@ import {
   sendEmailVerificationToken,
 } from "@/lib/emailVerification";
 import { getUserByEmail, getUserById } from "@/lib/user";
+import { HOUR, rateLimit, tooManyMessage } from "@/lib/rateLimit";
 import {
   EditProfileSchema,
   EditProfileSchemaType,
@@ -29,6 +30,10 @@ export const editUser = async (
   if (!user) return { error: "User does not exist!" };
 
   if (user.email !== vFields.data.email) {
+    const byUser = rateLimit(`email-change:user:${userId}`, 3, HOUR);
+
+    if (!byUser.ok) return { error: tooManyMessage(byUser.retryAfterSec) };
+
     const existingUser = await getUserByEmail(vFields.data.email);
     if (existingUser) {
       return { error: "Email already in use!" };
