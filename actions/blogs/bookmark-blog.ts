@@ -1,18 +1,21 @@
 "use server";
 
+import { auth } from "@/auth";
 import { db } from "@/lib/db";
-import { getUserById } from "@/lib/user";
 
-export const bookmarkBlog = async (blogId: string, userId: string) => {
+export const bookmarkBlog = async (blogId: string) => {
+  const session = await auth();
+  const userId = session?.user.userId;
+
+  if (!userId) return { error: "Not authenticated!" };
+
   const blog = await db.blog.findUnique({
     where: { id: blogId },
   });
 
-  if (!blog) return { error: "Blog not found!" };
-
-  const user = await getUserById(userId);
-
-  if (!user) return { error: "User does not exist!" };
+  // Drafts are private: only their author can interact with them
+  if (!blog || (!blog.isPublished && blog.userId !== userId))
+    return { error: "Blog not found!" };
 
   const bookmark = await db.bookmark.findUnique({
     where: {

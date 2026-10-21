@@ -1,18 +1,25 @@
 "use server";
 
+import { auth } from "@/auth";
 import { db } from "@/lib/db";
-import { getUserById } from "@/lib/user";
 
-export const clapComment = async (commentId: string, userId: string) => {
+export const clapComment = async (commentId: string) => {
+  const session = await auth();
+  const userId = session?.user.userId;
+
+  if (!userId) return { error: "Not authenticated!" };
+
   const comment = await db.comment.findUnique({
     where: { id: commentId },
+    include: { blog: { select: { isPublished: true, userId: true } } },
   });
 
-  if (!comment) return { error: "Comment was not found!" };
-
-  const user = await getUserById(userId);
-
-  if (!user) return { error: "User does not exist!" };
+  // Comments on private drafts are only reachable by the draft's author
+  if (
+    !comment ||
+    (!comment.blog.isPublished && comment.blog.userId !== userId)
+  )
+    return { error: "Comment was not found!" };
 
   const clap = await db.commentClap.findUnique({
     where: {

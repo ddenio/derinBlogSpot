@@ -10,7 +10,7 @@ const Comments = async ({ blog }: { blog: BlogWithUser }) => {
 
   const userId = session?.user.userId;
 
-  const { success } = await getComments(blog.id, null, userId);
+  const { success } = await getComments(blog.id, null);
 
   return (
     <div>

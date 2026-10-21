@@ -1,15 +1,21 @@
 "use server";
 
+import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { getUserById } from "@/lib/user";
 import { BlogSchema, BlogSchemaType } from "@/schemas/BlogSchema";
 
 export const createBlog = async (values: BlogSchemaType) => {
+  const session = await auth();
+  const userId = session?.user.userId;
+
+  if (!userId) return { error: "Not authenticated!" };
+
   const vFields = BlogSchema.safeParse(values);
 
   if (!vFields.success) return { error: "Invalid fields!" };
 
-  const { userId, isPublished } = vFields.data;
+  const { title, content, coverImage, isPublished, tags } = vFields.data;
 
   const user = await getUserById(userId);
 
@@ -19,10 +25,9 @@ export const createBlog = async (values: BlogSchemaType) => {
     return { error: "Not authorized! Verify your email!" };
   }
 
+  // The author is always the logged-in user, never a client-supplied id
   await db.blog.create({
-    data: {
-      ...vFields.data,
-    },
+    data: { userId, title, content, coverImage, isPublished, tags },
   });
 
   if (isPublished) {

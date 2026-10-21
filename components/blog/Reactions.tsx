@@ -24,7 +24,7 @@ const Reactions = ({ blog }: { blog: BlogWithUser }) => {
     );
     setUserHasClapped((prevState) => !prevState);
 
-    await clapBlog(blog.id, userId);
+    await clapBlog(blog.id);
     router.refresh();
   };
 

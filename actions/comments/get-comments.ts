@@ -1,5 +1,6 @@
 "use server";
 
+import { auth } from "@/auth";
 import { db } from "@/lib/db";
 
 const commentInclude = (userId?: string) => ({
@@ -18,9 +19,22 @@ const commentInclude = (userId?: string) => ({
 export const getComments = async (
   blogId: string,
   parentId: string | null,
-  userId?: string,
 ) => {
+  // The viewer always comes from the session, never from a client argument
+  const session = await auth();
+  const userId = session?.user.userId;
+
   try {
+    // Comments on a draft are private to the draft's author
+    const blog = await db.blog.findUnique({
+      where: { id: blogId },
+      select: { isPublished: true, userId: true },
+    });
+
+    if (!blog || (!blog.isPublished && blog.userId !== userId)) {
+      return { error: "Error fetching comments!" };
+    }
+
     const comments = await db.comment.findMany({
       where: { blogId, parentId: parentId },
       orderBy: { createdAt: parentId ? "asc" : "desc" },

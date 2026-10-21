@@ -24,7 +24,7 @@ const BookmarkButton = ({
 
     setUserHasBookmarked((prevState) => !prevState);
 
-    const res = await bookmarkBlog(blog.id, userId);
+    const res = await bookmarkBlog(blog.id);
 
     // Roll back the optimistic update if the server rejected it
     if (res.error) setUserHasBookmarked((prevState) => !prevState);

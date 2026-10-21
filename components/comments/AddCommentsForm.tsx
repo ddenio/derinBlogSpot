@@ -23,7 +23,6 @@ interface IAddCommentsProps {
 
 const AddCommentsForm = ({
   blogId,
-  userId,
   parentId,
   repliedToId,
   placeholder,
@@ -47,7 +46,6 @@ const AddCommentsForm = ({
       try {
         const res = await addComment({
           values: data,
-          userId,
           blogId,
           parentId,
           repliedToUserId: repliedToId,

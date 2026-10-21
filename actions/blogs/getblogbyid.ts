@@ -45,6 +45,11 @@ export const getBlogById = async ({ blogId }: { blogId: string }) => {
       },
     });
 
+    // Drafts are private: only their author can load them
+    if (blog && !blog.isPublished && blog.userId !== userId) {
+      return { error: "Blog doesn't exist!" };
+    }
+
     return { success: { blog } };
   } catch {
     return { error: "Error fetching blog content!" };

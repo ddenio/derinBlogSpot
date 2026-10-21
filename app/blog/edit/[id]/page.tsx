@@ -1,4 +1,5 @@
 import { getBlogById } from "@/actions/blogs/getblogbyid";
+import { auth } from "@/auth";
 import CreateBlogForm from "@/components/blog/CreateBlogForm";
 import Alert from "@/components/common/Alert";
 import Container from "@/components/layout/Container";
@@ -17,6 +18,11 @@ const BlogEdit = async ({ params }: BlogEditProps) => {
   const blog = res.success.blog;
 
   if (!blog) return <Alert error message="No blog was found" />;
+
+  const session = await auth();
+
+  if (session?.user.userId !== blog.userId)
+    return <Alert error message="Not authorized!" />;
 
   return (
     <Container>

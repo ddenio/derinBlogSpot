@@ -58,7 +58,7 @@ const CommentReactions = ({
     );
     setUserHasClapped((prevState) => !prevState);
 
-    await clapComment(comment.id, userId);
+    await clapComment(comment.id);
   };
 
   return (

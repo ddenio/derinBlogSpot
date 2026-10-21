@@ -22,7 +22,11 @@ export const getBookmarks = async ({
       skip,
       take: limit,
       orderBy: { createdAt: "desc" },
-      where: { userId },
+      // Hide bookmarked posts that were unpublished (unless they're yours)
+      where: {
+        userId,
+        blog: { OR: [{ isPublished: true }, { userId }] },
+      },
       include: {
         blog: {
           include: {
@@ -64,7 +68,12 @@ export const getBookmarks = async ({
       .filter((bookmark) => bookmark.blog !== null)
       .map((bookmark) => bookmark.blog);
 
-    const totalBookmarks = await db.bookmark.count({ where: { userId } });
+    const totalBookmarks = await db.bookmark.count({
+      where: {
+        userId,
+        blog: { OR: [{ isPublished: true }, { userId }] },
+      },
+    });
     const hasMore = totalBookmarks > page * limit;
 
     return { success: { blogs, hasMore } };
