@@ -3,6 +3,7 @@ import { Roboto, Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import NavBar from "@/components/layout/NavBar";
+import Footer from "@/components/layout/Footer";
 import { ThemeProvider } from "next-themes";
 import { auth } from "@/auth";
 import { SessionProvider } from "next-auth/react";
@@ -70,7 +71,7 @@ export default async function RootLayout({
                 <NavBar />
                 <main className="flex-grow">{children}</main>
 
-                <footer>...</footer>
+                <Footer />
               </ThemeProvider>
             </body>
           </html>

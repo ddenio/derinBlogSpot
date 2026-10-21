@@ -7,6 +7,7 @@ import FormField from "../common/FormField";
 import Heading from "../common/Heading";
 import Button from "../common/Button";
 import SocialAuth from "./SocialAuth";
+import LegalConsentNote from "../legal/LegalConsentNote";
 import { RegisterSchema, RegisterSchemaType } from "@/schemas/RegisterSchema";
 import { signUp } from "@/actions/auth/register";
 import { useState, useTransition } from "react";
@@ -113,6 +114,7 @@ const RegisterForm = () => {
       />
       <div className="flex justify-center my-2">Or</div>
       <SocialAuth />
+      <LegalConsentNote />
     </form>
   );
 };

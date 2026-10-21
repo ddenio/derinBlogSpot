@@ -3,6 +3,8 @@ export const publicRoutes = [
   "/email-verification",
   "/password-email-form",
   "/password-reset-form",
+  "/privacy",
+  "/terms",
 ];
 
 // Dynamic public routes, matched against the whole pathname

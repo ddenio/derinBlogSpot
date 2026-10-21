@@ -8,6 +8,7 @@ import FormField from "../common/FormField";
 import Heading from "../common/Heading";
 import Button from "../common/Button";
 import SocialAuth from "./SocialAuth";
+import LegalConsentNote from "../legal/LegalConsentNote";
 import { useEffect, useTransition } from "react";
 import { login } from "@/actions/auth/login";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -88,6 +89,7 @@ const LoginForm = () => {
       />
       <div className="flex justify-center my-2">Or</div>
       <SocialAuth />
+      <LegalConsentNote />
       <div className="flex items-end justify-end">
         <Link
           className="mt-2 text-sm underline text-slate-700 dark:text-slate-300"
