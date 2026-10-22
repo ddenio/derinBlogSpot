@@ -81,9 +81,9 @@ const UserButton = () => {
                 <Shield size={18} /> Admin
               </button>
             </DropdownMenuItem>
+            <DropdownMenuSeparator />
           </>
         )}
-        <DropdownMenuSeparator />
         <DropdownMenuItem>
           <button
             onClick={handleSignOut}
