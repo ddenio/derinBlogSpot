@@ -3,6 +3,8 @@
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { getUserById } from "@/lib/user";
+import { BLOG_PUBLISHED } from "@/lib/analytics/events";
+import { trackServerEvent } from "@/lib/analytics/posthogServer";
 import { BlogSchema, BlogSchemaType } from "@/schemas/BlogSchema";
 
 export const createBlog = async (values: BlogSchemaType) => {
@@ -38,6 +40,9 @@ export const createBlog = async (values: BlogSchemaType) => {
   });
 
   if (isPublished) {
+    // Administrators are never tracked
+    if (session.user.role !== "ADMIN") trackServerEvent(userId, BLOG_PUBLISHED);
+
     return { success: "Blog published!" };
   }
 

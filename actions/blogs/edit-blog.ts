@@ -3,6 +3,8 @@
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { getUserById } from "@/lib/user";
+import { BLOG_PUBLISHED } from "@/lib/analytics/events";
+import { trackServerEvent } from "@/lib/analytics/posthogServer";
 import { BlogSchema, BlogSchemaType } from "@/schemas/BlogSchema";
 
 export const editBlog = async (values: BlogSchemaType, blogId: string) => {
@@ -45,6 +47,12 @@ export const editBlog = async (values: BlogSchemaType, blogId: string) => {
       tags,
     },
   });
+
+  // Only the draft -> published switch counts (editing a live post doesn't),
+  // and administrators are never tracked
+  if (isPublished && !blog.isPublished && session.user.role !== "ADMIN") {
+    trackServerEvent(userId, BLOG_PUBLISHED);
+  }
 
   return { success: "Blog Updated" };
 };

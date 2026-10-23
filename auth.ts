@@ -7,6 +7,8 @@ import authConfig from "./auth.config";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { db } from "./lib/db";
 import { getUserByEmail, getUserById } from "./lib/user";
+import { EMAIL_VERIFIED, USER_SIGNED_UP } from "./lib/analytics/events";
+import { trackServerEvent } from "./lib/analytics/posthogServer";
 import { LoginSchema } from "./schemas/LoginSchema";
 import bcrypt from "bcryptjs";
 import {
@@ -30,11 +32,21 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   session: { strategy: "jwt" },
   ...authConfig,
   events: {
-    async linkAccount({ user }) {
+    // Only OAuth sign-ups reach here: credentials users are created directly
+    // in actions/auth/register.ts
+    async createUser({ user }) {
+      if (user.id) trackServerEvent(user.id, USER_SIGNED_UP, { method: "oauth" });
+    },
+    async linkAccount({ user, account }) {
       await db.user.update({
         where: { id: user.id },
         data: { emailVerified: new Date() },
       });
+
+      // Fires once per account: Auth.js doesn't link a second provider to an
+      // existing user unless account linking is turned on, and it isn't
+      if (user.id)
+        trackServerEvent(user.id, EMAIL_VERIFIED, { method: account.provider });
     },
   },
   providers: [
