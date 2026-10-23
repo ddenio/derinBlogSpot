@@ -11,6 +11,7 @@ import { Pencil } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import BookmarkButton from "@/components/blog/BookmarkButton";
+import BlogViewTracker from "@/components/analytics/BlogViewTracker";
 
 import "./editor.css";
 import Comments from "@/components/comments/Comments";
@@ -48,6 +49,7 @@ const BlogContent = async ({ params }: BlogContentProps) => {
 
   return (
     <div className="flex flex-col max-w-225 m-auto gap-6">
+      <BlogViewTracker blogId={blog.id} />
       {blog.coverImage && (
         <div className="relative w-full aspect-5/2 mt-2 overflow-hidden">
           <Image

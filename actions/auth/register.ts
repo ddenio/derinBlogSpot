@@ -18,6 +18,8 @@ import {
   sendEmailVerificationToken,
 } from "@/lib/emailVerification";
 import { sendAccountExistsEmail } from "@/lib/accountExistsEmail";
+import { USER_SIGNED_UP } from "@/lib/analytics/events";
+import { trackServerEvent } from "@/lib/analytics/posthogServer";
 
 export const signUp = async (values: RegisterSchemaType) => {
   const validateFields = RegisterSchema.safeParse(values);
@@ -67,13 +69,15 @@ export const signUp = async (values: RegisterSchemaType) => {
       }
     });
   } else {
-    await db.user.create({
+    const newUser = await db.user.create({
       data: {
         name,
         email,
         password: hashedPassword,
       },
     });
+
+    trackServerEvent(newUser.id, USER_SIGNED_UP, { method: "credentials" });
 
     // Sent after the response so both paths take about the same time. If it
     // fails, the user can log in to have the verification email re-sent.

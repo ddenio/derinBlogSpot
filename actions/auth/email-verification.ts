@@ -2,6 +2,8 @@
 
 import { db } from "@/lib/db";
 import { getUserByEmail } from "@/lib/user";
+import { EMAIL_VERIFIED } from "@/lib/analytics/events";
+import { trackServerEvent } from "@/lib/analytics/posthogServer";
 
 export const verifyEmail = async (token: string) => {
   const emailVerificationToken = await db.emailVerificationToken.findUnique({
@@ -56,6 +58,10 @@ export const verifyEmail = async (token: string) => {
     where: { id: existingUser.id },
     data: { emailVerified: new Date(), email: emailVerificationToken.email },
   });
+
+  // The link isn't single-use, so only the first click counts
+  if (!existingUser.emailVerified)
+    trackServerEvent(existingUser.id, EMAIL_VERIFIED, { method: "email" });
 
   return { success: "Email verified!" };
 };

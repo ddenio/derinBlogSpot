@@ -62,6 +62,7 @@ IMPORTANT: Execute every step in order, top to bottom.
 - Create `lib/analytics/posthogQuery.ts` (server-only: `import "server-only"` at the top (package installed in Part 2), so the personal API key can never be bundled into client code; the same applies to `lib/analytics/posthogServer.ts`): `runHogQL<T>(query: string)` posting `{ query: { kind: "HogQLQuery", query }, name: "admin-dashboard" }` to `${POSTHOG_HOST}/api/projects/${POSTHOG_PROJECT_ID}/query/` with `Authorization: Bearer ${POSTHOG_PERSONAL_API_KEY}`, an `AbortSignal.timeout(10_000)`, and a `globalThis` TTL cache (5 minutes, keyed by query string, bounded size) mirroring `lib/rateLimit.ts`. Throw a typed error when env vars are missing so the UI can show "PostHog is not configured".
 - Add `runFunnel(steps, days)` posting a `FunnelsQuery` (`series` of `EventsNode`s, `dateRange.date_from: "-${days}d"`, 30-day conversion window). Verify the response shape against the live API during implementation; if it differs, fall back to `count(DISTINCT distinct_id)` per event via HogQL and document the non-strict ordering.
 - Query strings contain only constants and the allowlisted integer `days`; never interpolate request input.
+- Every query must also filter on `properties.$host` equal to the production host from `SITE_URL` (e.g. `derinspot.blog`): while testing Part 2, `localhost` events were sent to the same PostHog project, and local development will keep sending them whenever `NEXT_PUBLIC_POSTHOG_KEY` is in `.env`.
 
 ### 2. Traffic analytics server action
 

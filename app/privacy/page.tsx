@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { LegalPage, LegalSection } from "@/components/legal/LegalPage";
 import {
+  ANALYTICS_RETENTION,
   CONTACT_EMAIL,
   MINIMUM_AGE,
   OPERATOR_NAME,
@@ -94,7 +95,19 @@ const Privacy = () => {
           within an hour.
         </p>
         <p>
-          We don’t use advertising or analytics trackers, and we don’t build
+          <strong>Usage statistics:</strong> we use PostHog, a
+          product-analytics service, to see how many people visit and which
+          pages and posts are viewed. For each page view it receives the page
+          address (without anything after a “?”), the website that sent you
+          here (if any), your browser and device type, and the IP address your
+          connection came from, which it uses to work out your approximate
+          country. If you are logged in, these events are linked to your random
+          account ID (never your name or email) so a returning member is
+          counted once, and we also record when you sign up, verify your email
+          or publish a post, as part of running the service. Page views are
+          recorded without cookies or local storage, are not recorded if your
+          browser sends “Do Not Track”, and are not recorded for the site’s
+          administrators. We don’t use advertising trackers and we don’t build
           advertising profiles.
         </p>
       </LegalSection>
@@ -137,6 +150,13 @@ const Privacy = () => {
             our legitimate interests (Art. 6(1)(f)).
           </li>
           <li>
+            <strong>To understand how the site is used and improve it</strong>
+            (counting visits, seeing which posts are read, and how many people
+            sign up and publish). Legal basis: our legitimate interests
+            (Art. 6(1)(f)). You can object at any time, for example by turning
+            on “Do Not Track” in your browser (see section 8).
+          </li>
+          <li>
             <strong>To meet legal obligations</strong>, such as responding to
             lawful requests. Legal basis: legal obligation (Art. 6(1)(c)).
           </li>
@@ -166,6 +186,10 @@ const Privacy = () => {
             upload.
           </li>
           <li>
+            <strong>PostHog</strong>: usage analytics (page views and
+            sign-up/publishing events). We use its US-hosted service.
+          </li>
+          <li>
             <strong>Cloudflare</strong>: our DNS provider, which translates
             derinspot.blog into the server’s address.
           </li>
@@ -186,8 +210,9 @@ const Privacy = () => {
         <p>
           We use only the cookies the site needs to work. Because they are
           strictly necessary for login and security, they don’t require your
-          consent, and we don’t show a cookie banner. We don’t use advertising,
-          analytics or tracking cookies.
+          consent, and we don’t show a cookie banner. Our analytics (PostHog) is
+          set up to work without cookies or local storage, and we don’t use
+          advertising or tracking cookies.
         </p>
         <div className="overflow-x-auto">
           <table className="w-full border-collapse text-left text-sm">
@@ -240,6 +265,13 @@ const Privacy = () => {
           </li>
           <li>We keep your 100 most recent notifications.</li>
           <li>
+            Analytics events (page views and sign-up/publishing events) are
+            kept for {ANALYTICS_RETENTION}. If you are logged in they are
+            linked only to a random account ID, so once you delete your
+            account (which removes that ID from our database) they can no
+            longer be tied to you.
+          </li>
+          <li>
             Comments and posts you delete yourself are removed from the live
             site straight away.
           </li>
@@ -272,11 +304,19 @@ const Privacy = () => {
           requests). An authorized agent may make a request for you with your
           written permission.
         </p>
+        <p>
+          <strong>Analytics opt-out:</strong> turn on “Do Not Track” in your
+          browser and we won’t record your page views. To have the analytics events
+          linked to your account ID deleted, email{" "}
+          <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> from the
+          address on your account.
+        </p>
       </LegalSection>
 
       <LegalSection title="9. Where your data is processed">
         <p>
-          Our service providers are based in, or process data in, the United
+          Our service providers, including PostHog (we use its US-hosted
+          analytics service), are based in, or process data in, the United
           States. If you are in the EEA, the UK or Switzerland, your data is
           therefore transferred to the US. Where required, those transfers rely
           on legal safeguards such as the EU Standard Contractual Clauses or an
