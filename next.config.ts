@@ -21,7 +21,8 @@ const csp = [
   "img-src 'self' data: blob: https://files.edgestore.dev https://lh3.googleusercontent.com https://avatars.githubusercontent.com",
   "media-src 'self' blob: https://files.edgestore.dev",
   "font-src 'self' data:",
-  // Socket.IO (ws/wss) and Edge Store uploads
+  // Socket.IO (ws/wss) and Edge Store uploads. PostHog analytics needs no
+  // entry: the browser only talks to our own /ingest path (see rewrites below)
   "connect-src 'self' ws: wss: https://files.edgestore.dev https://*.edgestore.dev https://*.amazonaws.com",
   "worker-src 'self' blob:",
   "frame-src 'self'",
@@ -49,6 +50,11 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   // Don't advertise the framework in an X-Powered-By header
   poweredByHeader: false,
+  // PostHog's API uses trailing slashes (/ingest/e/); don't redirect them
+  skipTrailingSlashRedirect: true,
+  // PostHog is reached through our own /ingest proxy (app/ingest/[...path]),
+  // so the CSP stays 'self'. Its API uses trailing slashes (/ingest/e/), so
+  // they must not be redirected away.
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },
