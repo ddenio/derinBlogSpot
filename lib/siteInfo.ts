@@ -14,7 +14,12 @@ export const OPERATOR_NAME = "Derin DeNio";
 export const CONTACT_EMAIL = "privacy@derinspot.blog";
 
 // Update whenever you change either policy in a way that matters to users
-export const LEGAL_LAST_UPDATED = "October 21, 2026";
+export const LEGAL_LAST_UPDATED = "October 22, 2026";
 
 // Minimum age to use the site
 export const MINIMUM_AGE = 16;
+
+// How long PostHog keeps analytics events, as stated in the Privacy Policy.
+// IMPORTANT: this must match PostHog > Settings > Project > Data retention
+// (and your PostHog plan). Change both together.
+export const ANALYTICS_RETENTION = "one year";
