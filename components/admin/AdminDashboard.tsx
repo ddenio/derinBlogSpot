@@ -1,28 +1,21 @@
-import { getCounts } from "@/actions/admin/getCounts";
+import { Suspense } from "react";
+import type { RangeDays } from "@/lib/analytics/range";
 import Heading from "../common/Heading";
-import Alert from "../common/Alert";
+import DbAnalyticsSection from "./DbAnalyticsSection";
+import RangeToggle from "./RangeToggle";
+import SectionSkeleton from "./SectionSkeleton";
 
-const AdminDashboard = async () => {
-  const res = await getCounts();
-
-  const userCount = res.success?.userCount ? res.success?.userCount : 0;
-  const blogCount = res.success?.blogCount ? res.success?.blogCount : 0;
-
-  if (res.error) return <Alert error message={res.error} />;
-
+const AdminDashboard = ({ range }: { range: RangeDays }) => {
   return (
-    <div>
-      <Heading title="Analytics" center lg />
-      <div className="flex items-center flex-wrap justify-center mt-12 gap-12">
-        <div className="flex flex-col gap-2 items-center border rounded-sm px-12 py-8 text-4xl">
-          <span className="font-bold">{userCount}</span>
-          <span>Users</span>
-        </div>
-        <div className="flex flex-col gap-2 items-center border rounded-sm px-12 py-8 text-4xl">
-          <span className="font-bold">{blogCount}</span>
-          <span>Blogs</span>
-        </div>
+    <div className="flex flex-col gap-8">
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <Heading title="Analytics" lg />
+        <RangeToggle range={range} />
       </div>
+      {/* key={range} so switching the range shows the skeleton again */}
+      <Suspense key={range} fallback={<SectionSkeleton />}>
+        <DbAnalyticsSection range={range} />
+      </Suspense>
     </div>
   );
 };
