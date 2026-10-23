@@ -10,6 +10,7 @@ import { SessionProvider } from "next-auth/react";
 import { EdgeStoreProvider } from "@/lib/edgestore";
 import { Toaster } from "react-hot-toast";
 import { SocketContextProvider } from "@/context/SocketContext";
+import PostHogProvider from "@/components/analytics/PostHogProvider";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -53,6 +54,7 @@ export default async function RootLayout({
                 roboto.variable,
               )}
             >
+              <PostHogProvider />
               <Toaster
                 position="bottom-center"
                 toastOptions={{
