@@ -34,7 +34,10 @@ export const trackServerEvent = (
     getClient()?.capture({
       distinctId,
       event,
-      properties,
+      // `environment` lets the admin dashboard tell real production events
+      // from ones sent by a developer's local server (which shares the
+      // PostHog project)
+      properties: { ...properties, environment: process.env.NODE_ENV },
       // These events come from our server, not the visitor's browser, so
       // don't let PostHog place the user at the server's location
       disableGeoip: true,
