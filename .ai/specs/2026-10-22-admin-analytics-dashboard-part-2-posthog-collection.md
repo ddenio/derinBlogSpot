@@ -37,7 +37,7 @@ Part 1 (`2026-10-22-admin-analytics-dashboard-part-1-database-analytics.md`). Br
 
 Use these files to implement this part:
 
-- `next.config.ts` - add `rewrites()` for `/ingest` and `skipTrailingSlashRedirect`; the CSP stays unchanged because the proxy keeps traffic same-origin.
+- `next.config.ts` - add `skipTrailingSlashRedirect`; the CSP stays unchanged because the proxy keeps traffic same-origin. (A `rewrites()` proxy was dropped during implementation: it forwards the Auth.js session cookie to PostHog. See New Files.)
 - `proxy.ts` - the Next 16 middleware; its matcher must exclude `ingest` or logged-out visitors' analytics requests are redirected to `/login`.
 - `app/layout.tsx` - mount `PostHogProvider` inside `SessionProvider`.
 - `app/blog/(details)/[id]/page.tsx` - add `BlogViewTracker`.
@@ -53,6 +53,8 @@ Use these files to implement this part:
 ### New Files
 
 - `lib/analytics/events.ts`
+- `lib/analytics/ingestProxy.ts` - pure helpers for the proxy: upstream URL, allow-listed request/response headers (no cookie, authorization, referer or origin forwarded; no set-cookie returned).
+- `app/ingest/[...path]/route.ts` - the `/ingest` reverse proxy as a route handler: GET/POST only, per-IP rate limit (300/min), 1 MB body cap, 10 s timeout, 502 on upstream failure.
 - `lib/analytics/posthogServer.ts`
 - `components/analytics/PostHogProvider.tsx`
 - `components/analytics/BlogViewTracker.tsx`
@@ -68,8 +70,9 @@ IMPORTANT: Execute every step in order, top to bottom.
 
 ### 2. Reverse proxy and middleware exemption
 
-- `next.config.ts`: add `skipTrailingSlashRedirect: true` and `async rewrites()` returning, in this order: `/ingest/static/:path*` -> `https://us-assets.i.posthog.com/static/:path*`, `/ingest/array/:path*` -> `https://us-assets.i.posthog.com/array/:path*`, `/ingest/:path*` -> `https://us.i.posthog.com/:path*`. Do **not** change the CSP (everything stays same-origin); add a comment next to the `connect-src` directive explaining that PostHog goes through `/ingest`.
-- `proxy.ts`: add `ingest` to the negative lookahead of the first matcher entry so unauthenticated visitors' analytics requests are not redirected to `/login`. Verify the `/api` matcher entry does not capture `/ingest`.
+- Implement the proxy as a route handler (`app/ingest/[...path]/route.ts` + `lib/analytics/ingestProxy.ts`), NOT a `next.config.ts` rewrite: Next rewrites forward every request header to the destination, which would send the Auth.js session cookie to PostHog. Static asset paths (`/static/`, `/array/`) go to `https://us-assets.i.posthog.com`, everything else to `https://us.i.posthog.com`.
+- `next.config.ts`: add `skipTrailingSlashRedirect: true` (PostHog posts to `/ingest/e/`). Do **not** change the CSP (everything stays same-origin); add a comment next to the `connect-src` directive explaining that PostHog goes through `/ingest`.
+- `proxy.ts`: add `ingest(?:/|$)` (with the boundary, so `/ingestion` is still protected) to the negative lookahead of the first matcher entry so unauthenticated visitors' analytics requests are not redirected to `/login`. Verify the `/api` matcher entry does not capture `/ingest`.
 
 ### 3. Client tracking
 
