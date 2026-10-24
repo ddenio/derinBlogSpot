@@ -9,33 +9,34 @@ import UserButton from "./UserButton";
 import Link from "next/link";
 import { Suspense } from "react";
 import { useSession } from "next-auth/react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import Tags from "./Tags";
 
 const NavBar = () => {
   const session = useSession();
   const isLoggedIn = session.status === "authenticated";
-  const router = useRouter();
   const pathname = usePathname();
   const showFilters = pathname.startsWith("/blog/feed");
 
   return (
     <nav className="sticky top-0 border-b z-50 bg-background">
       <Container>
-        <div className="flex justify-between items-center gap-8">
-          <div
-            className="flex items-center gap-1 cursor-pointer"
-            onClick={() => router.push("/blog/feed/1")}
+        <div className="flex justify-between items-center gap-3 sm:gap-8">
+          <Link
+            href="/blog/feed/1"
+            className="flex min-w-0 items-center gap-1"
           >
-            <FaBlogger size={24} />
-            <div className="font-bold text-xl">DerinSpot.blog</div>
-          </div>
+            <FaBlogger size={24} className="shrink-0" />
+            <span className="font-bold text-lg sm:text-xl truncate">
+              DerinSpot.blog
+            </span>
+          </Link>
           {showFilters && (
             <Suspense>
               <SearchInput />
             </Suspense>
           )}
-          <div className="flex gap-5 sm:gap-8 items-center">
+          <div className="flex shrink-0 gap-4 sm:gap-8 items-center">
             <ThemeToggle />
             {isLoggedIn && <Notifications />}
             {isLoggedIn && <UserButton />}
