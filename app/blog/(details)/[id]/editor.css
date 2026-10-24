@@ -1,3 +1,11 @@
 .bn-editor {
   padding-inline: 4px !important;
+  /* A very long word or URL wraps instead of widening the page on phones */
+  overflow-wrap: anywhere;
+}
+
+.bn-editor img,
+.bn-editor video {
+  max-width: 100%;
+  height: auto;
 }

@@ -199,7 +199,7 @@ const CreateBlogForm = ({ blog }: { blog?: Blog }) => {
           errors={errors}
           placeholder="Blog Title"
           disabled={false}
-          inputClassNames="border-none text-5xl font-bold bg-transparent px-0"
+          inputClassNames="border-none text-3xl sm:text-5xl font-bold bg-transparent px-0"
         />
 
         <fieldset className="flex flex-col gap-3">
