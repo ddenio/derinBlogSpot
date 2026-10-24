@@ -48,7 +48,7 @@ const Reactions = ({ blog }: { blog: BlogWithUser }) => {
         onClick={handleClap}
         aria-label={userHasClapped ? "Remove clap" : "Clap for this post"}
         aria-pressed={userHasClapped}
-        className="-my-2 -ml-2 mr-2 flex items-center gap-1 p-2 cursor-pointer"
+        className="relative z-10 -my-2 -ml-2 mr-2 flex items-center gap-1 p-2 cursor-pointer"
       >
         {userHasClapped ? (
           <FaHandsClapping size={20} />

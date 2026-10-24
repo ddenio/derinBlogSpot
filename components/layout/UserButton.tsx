@@ -41,7 +41,7 @@ const UserButton = () => {
       >
         <Avatar>
           <AvatarImage src={imageUrl} />
-          <AvatarFallback className="border-2 border-slate-500 dark: border-slate-50">
+          <AvatarFallback className="border-2 border-border">
             <UserRound />
           </AvatarFallback>
         </Avatar>

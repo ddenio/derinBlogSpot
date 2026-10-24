@@ -29,7 +29,7 @@ interface ListBlogsProps {
 }
 
 const pageButtonClass =
-  "inline-flex items-center gap-1.5 rounded-md border border-slate-300 dark:border-slate-600 px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 transition-colors hover:bg-slate-100 dark:hover:bg-slate-800";
+  "inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted";
 
 const ListBlogs = ({
   blogs,
@@ -48,7 +48,7 @@ const ListBlogs = ({
 
   return (
     <div className="flex flex-col max-w-200 m-auto justify-between min-h-[85vh] px-4 pt-2">
-      <section>
+      <section className="flex flex-col gap-4">
         {blogs.map((blog) => (
           <BlogCard key={blog.id} blog={blog} isUserProfile={isUserProfile} />
         ))}

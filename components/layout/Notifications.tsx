@@ -123,13 +123,13 @@ const Notifications = () => {
 
         {loading && (
           <DropdownMenuItem>
-            <div className="text-sm text-gray-500">Loading...</div>
+            <div className="text-sm text-muted-foreground">Loading...</div>
           </DropdownMenuItem>
         )}
 
         {error && (
           <DropdownMenuItem>
-            <div className="text-sm text-rose-500">{error}</div>
+            <div className="text-sm text-destructive">{error}</div>
           </DropdownMenuItem>
         )}
 

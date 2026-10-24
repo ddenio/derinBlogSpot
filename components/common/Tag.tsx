@@ -6,7 +6,7 @@ interface TagProps {
 
 const Tag = ({ children }: TagProps) => {
   return (
-    <span className="bg-secondary px-2 py-1 rounded text-sm cursor-pointer">
+    <span className="rounded-md bg-secondary px-2 py-0.5 text-xs text-secondary-foreground sm:text-sm">
       {children}
     </span>
   );

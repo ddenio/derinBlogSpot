@@ -92,7 +92,7 @@ const LoginForm = () => {
       <LegalConsentNote />
       <div className="flex items-end justify-end">
         <Link
-          className="mt-2 text-sm underline text-slate-700 dark:text-slate-300"
+          className="mt-2 text-sm underline text-muted-foreground hover:text-foreground"
           href="/password-email-form"
         >
           Forgot Password?
