@@ -17,10 +17,14 @@ const BookmarkButton = ({
   const [userHasBookmarked, setUserHasBookmarked] = useState(
     !!blog.bookmarks.length,
   );
+  // Bumped on each new bookmark so the icon replays its little "pop"
+  const [popCount, setPopCount] = useState(0);
   const router = useRouter();
 
   const handleBookmark = async () => {
     if (!userId) return;
+
+    if (!userHasBookmarked) setPopCount((count) => count + 1);
 
     setUserHasBookmarked((prevState) => !prevState);
 
@@ -40,11 +44,18 @@ const BookmarkButton = ({
       aria-pressed={userHasBookmarked}
       className="relative z-10 -m-2 p-2 cursor-pointer"
     >
-      {userHasBookmarked ? (
-        <FaBookmark size={18} />
-      ) : (
-        <FaRegBookmark size={18} />
-      )}
+      <span
+        key={popCount}
+        className={
+          popCount ? "inline-flex motion-safe:animate-pop" : "inline-flex"
+        }
+      >
+        {userHasBookmarked ? (
+          <FaBookmark size={18} />
+        ) : (
+          <FaRegBookmark size={18} />
+        )}
+      </span>
     </button>
   );
 };

@@ -5,8 +5,19 @@ import { Input } from "../ui/input";
 import { ChangeEventHandler, useEffect, useRef, useState } from "react";
 import queryString from "query-string";
 import { useRouter, useSearchParams } from "next/navigation";
+import { cn } from "@/lib/utils";
 
-const SearchInput = () => {
+interface SearchInputProps {
+  // Visibility/width; hidden on phones by default (the navbar has a search
+  // button there that opens a full-width copy)
+  className?: string;
+  autoFocus?: boolean;
+}
+
+const SearchInput = ({
+  className = "hidden sm:block",
+  autoFocus,
+}: SearchInputProps) => {
   const router = useRouter();
   const params = useSearchParams();
   const urlTitle = params.get("title") ?? "";
@@ -52,12 +63,14 @@ const SearchInput = () => {
   };
 
   return (
-    <div className="relative hidden sm:block">
+    <div className={cn("relative", className)}>
       <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
       <Input
         value={value}
         onChange={handleOnChange}
         placeholder="Search"
+        autoFocus={autoFocus}
+        aria-label="Search posts"
         className="h-9 pl-9 bg-primary/10"
       />
     </div>

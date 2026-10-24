@@ -2,7 +2,8 @@ import { Blog, User } from "@/generated/prisma/client";
 import Link from "next/link";
 import qs from "query-string";
 import BlogCard from "./BlogCard";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, FileText } from "lucide-react";
+import EmptyState from "../common/EmptyState";
 
 export type BlogWithUser = Blog & {
   user: Pick<User, "id" | "name" | "image">;
@@ -26,6 +27,8 @@ interface ListBlogsProps {
   tag?: string;
   title?: string;
   basePath?: string;
+  // Shown instead of the list when there are no posts
+  emptyState?: React.ReactNode;
 }
 
 const pageButtonClass =
@@ -39,11 +42,34 @@ const ListBlogs = ({
   tag,
   title,
   basePath = "/blog/feed",
+  emptyState,
 }: ListBlogsProps) => {
   const pageHref = (page: number) =>
     qs.stringifyUrl(
       { url: `${basePath}/${page}`, query: { tag, title } },
       { skipNull: true, skipEmptyString: true },
+    );
+
+  if (!blogs.length)
+    return (
+      <div className="m-auto max-w-200 px-4 pt-4">
+        {emptyState ?? (
+          <EmptyState
+            icon={FileText}
+            title="No posts yet"
+            message={
+              currentPage > 1
+                ? "There is nothing on this page."
+                : "Posts will show up here."
+            }
+            action={
+              currentPage > 1
+                ? { href: pageHref(1), label: "Back to the first page" }
+                : undefined
+            }
+          />
+        )}
+      </div>
     );
 
   return (
