@@ -39,12 +39,12 @@ const TextAreaField = <T extends FieldValues>({
         placeholder={placeholder}
         {...register(id as Path<T>)}
         className={cn(
-          "w-full p-3 my-2 outline-none rounded-md disabled:opacity-70 disabled:cursor-not-allowed border border-slate-300 dark:border-slate-700 min-h-28",
-          errors[id] && "border-rose-400",
+          "w-full p-3 my-2 rounded-md border border-input bg-transparent outline-none transition-colors focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-70 disabled:cursor-not-allowed min-h-28",
+          errors[id] && "border-destructive",
           inputClassNames,
         )}
       />
-      {message && <span className="text-sm text-rose-400">{message}</span>}
+      {message && <span className="text-sm text-destructive">{message}</span>}
     </div>
   );
 };

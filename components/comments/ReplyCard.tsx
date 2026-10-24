@@ -18,7 +18,7 @@ const ReplyCard = ({
       <UserSummary user={reply.user} createdDate={reply.createdAt} />
       <p>
         {reply.repliedToUser && (
-          <span className="rounded px-1 py-0.5 font-medium bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300">
+          <span className="rounded px-1 py-0.5 font-medium bg-primary/10 text-primary">
             @{reply.repliedToUser.name}
           </span>
         )}{" "}

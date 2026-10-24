@@ -44,9 +44,9 @@ const FormField = <T extends FieldValues>({
           type={isPasswordField && showPassword ? "text" : type}
           {...register(id as Path<T>)}
           className={cn(
-            "w-full p-3 my-2 outline-none rounded-md disabled:opacity-70 disabled:cursor-not-allowed border border-slate-300 dark:border-slate-700",
+            "w-full p-3 my-2 rounded-md border border-input bg-transparent outline-none transition-colors focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-70 disabled:cursor-not-allowed",
             isPasswordField && "pr-11",
-            errors[id] && "border-rose-400",
+            errors[id] && "border-destructive",
             inputClassNames,
           )}
         />
@@ -57,13 +57,13 @@ const FormField = <T extends FieldValues>({
             disabled={disabled}
             onClick={() => setShowPassword((prev) => !prev)}
             aria-label={showPassword ? "Hide password" : "Show password"}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 disabled:opacity-70 disabled:cursor-not-allowed"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground disabled:opacity-70 disabled:cursor-not-allowed"
           >
             {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
           </button>
         )}
       </div>
-      {message && <span className="text-sm text-rose-400">{message}</span>}
+      {message && <span className="text-sm text-destructive">{message}</span>}
     </div>
   );
 };

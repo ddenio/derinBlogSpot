@@ -199,7 +199,7 @@ const CreateBlogForm = ({ blog }: { blog?: Blog }) => {
           errors={errors}
           placeholder="Blog Title"
           disabled={false}
-          inputClassNames="border-none text-3xl sm:text-5xl font-bold bg-transparent px-0"
+          inputClassNames="border-none text-3xl sm:text-5xl font-bold bg-transparent px-0 focus-visible:ring-0"
         />
 
         <fieldset className="flex flex-col gap-3">
@@ -231,7 +231,7 @@ const CreateBlogForm = ({ blog }: { blog?: Blog }) => {
             })}
           </div>
           {errors.tags && errors.tags.message && (
-            <span className="text-sm text-rose-400">
+            <span className="text-sm text-destructive">
               Select at least one tag, max of 4!
             </span>
           )}
@@ -241,7 +241,7 @@ const CreateBlogForm = ({ blog }: { blog?: Blog }) => {
           initialContent={blog?.content ? blog.content : ""}
         />
         {errors.content && errors.content.message && (
-          <span className="text-sm text-rose-400">
+          <span className="text-sm text-destructive">
             {errors.content.message}
           </span>
         )}
@@ -249,18 +249,18 @@ const CreateBlogForm = ({ blog }: { blog?: Blog }) => {
       <div>
         <div className="border-t pt-2">
           {errors.userId && errors.userId.message && (
-            <span className="text-sm text-rose-400">Missing a User Id</span>
+            <span className="text-sm text-destructive">Missing a User Id</span>
           )}
           <div className="flex items-center justify-between gap-6">
             <div className="flex gap-4">
               <Button
                 type="submit"
                 label={isPublishing ? "Publishing..." : "Publish"}
-                className="bg-blue-700"
               />
               <Button
                 type="button"
                 label={isSavingAsDraft ? "Saving..." : "Save as Draft"}
+                outlined
                 onClick={handleSubmit(onSaveDraft)}
               />
             </div>
@@ -272,13 +272,14 @@ const CreateBlogForm = ({ blog }: { blog?: Blog }) => {
                     <Button
                       type="button"
                       label="Cancel"
+                      outlined
                       onClick={() => setConfirmingDelete(false)}
                       disabled={isDeleting}
                     />
                     <Button
                       type="button"
                       label={isDeleting ? "Deleting..." : "Yes, delete"}
-                      className="bg-rose-400"
+                      destructive
                       onClick={onDelete}
                       disabled={isDeleting}
                     />
@@ -287,7 +288,7 @@ const CreateBlogForm = ({ blog }: { blog?: Blog }) => {
                   <Button
                     type="button"
                     label="Delete"
-                    className="bg-rose-400"
+                    destructive
                     onClick={() => setConfirmingDelete(true)}
                   />
                 )}

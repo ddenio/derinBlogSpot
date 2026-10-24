@@ -167,7 +167,7 @@ const EditUserForm = ({
         />
       </form>
       <div className="max-w-125 m-auto mt-12">
-        <div className="text-rose-500">
+        <div className="text-destructive">
           <Heading title="Danger Zone" lg />
         </div>
         <UiButton

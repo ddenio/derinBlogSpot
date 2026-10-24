@@ -62,7 +62,7 @@ const UserProfile = async ({
         <div className="flex items-start sm:items-center gap-6 flex-col sm:flex-row">
           <Avatar className="w-20 h-20">
             <AvatarImage src={user?.image ? user?.image : ""} />
-            <AvatarFallback className="border-2 border-slate-500 dark:border-slate-50">
+            <AvatarFallback className="border-2 border-border">
               <UserRound />
             </AvatarFallback>
           </Avatar>

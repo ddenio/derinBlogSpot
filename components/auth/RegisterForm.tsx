@@ -50,7 +50,7 @@ const RegisterForm = () => {
     return (
       <div className="flex flex-col max-w-125 m-auto mt-8 gap-2 text-center">
         <Heading title="Check Your Email" lg center />
-        <p className="text-slate-600 dark:text-slate-300">
+        <p className="text-muted-foreground">
           We sent a verification link to your email address. Click the link
           to verify your account, then log in below.
         </p>

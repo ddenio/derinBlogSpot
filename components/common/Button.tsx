@@ -7,6 +7,7 @@ interface ButtonProps {
   label: string;
   disabled?: boolean;
   outlined?: boolean;
+  destructive?: boolean;
   small?: boolean;
   icon?: IconType;
   className?: string;
@@ -19,6 +20,7 @@ const Button = ({
   type,
   disabled,
   outlined,
+  destructive,
   small,
   icon: Icon,
   className,
@@ -30,10 +32,14 @@ const Button = ({
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        "disabled:opacity-70 disabled:cursor-not-allowed rounded-md hover:opacity-80 transition w-auto border-slate-300 border-2 flex items-center justify-center gap-2 py-3 px-5 my-2 bg-slate-700 text-white dark:border-slate-700",
+        // Default = the brand (primary) color; `outlined` is the quiet
+        // secondary; `destructive` is for deleting things.
+        "flex w-auto items-center justify-center gap-2 rounded-lg border border-transparent bg-primary px-5 py-2.5 my-2 font-medium text-primary-foreground transition-colors outline-none hover:bg-primary/90 focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-60",
         outlined &&
-          "bg-transparent text-slate-700 dark:text-slate-300 dark:bg-transparent",
-        small && "text-sm py-1 px-2 border-[1px]",
+          "border-border bg-transparent text-foreground hover:bg-muted",
+        destructive &&
+          "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/30 dark:text-black",
+        small && "px-3 py-1 text-sm",
         className && className,
       )}
     >
