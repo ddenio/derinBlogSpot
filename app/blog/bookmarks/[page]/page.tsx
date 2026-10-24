@@ -1,7 +1,9 @@
 import { getBookmarks } from "@/actions/blogs/get-bookmarks";
 import ListBlogs from "@/components/blog/ListBlogs";
 import Alert from "@/components/common/Alert";
+import EmptyState from "@/components/common/EmptyState";
 import Heading from "@/components/common/Heading";
+import { Bookmark } from "lucide-react";
 
 interface BookmarksProps {
   params: Promise<{
@@ -34,6 +36,14 @@ const Bookmarks = async ({ params }: BookmarksProps) => {
         hasMore={hasMore}
         currentPage={currentPage}
         basePath="/blog/bookmarks"
+        emptyState={
+          <EmptyState
+            icon={Bookmark}
+            title="No bookmarks yet"
+            message="Tap the bookmark icon on a post to save it for later."
+            action={{ href: "/blog/feed/1", label: "Browse posts" }}
+          />
+        }
       />
     </div>
   );
