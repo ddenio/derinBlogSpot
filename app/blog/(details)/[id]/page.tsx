@@ -48,7 +48,7 @@ const BlogContent = async ({ params }: BlogContentProps) => {
   );
 
   return (
-    <div className="flex flex-col max-w-225 m-auto gap-6">
+    <div className="flex flex-col max-w-3xl m-auto gap-6">
       <BlogViewTracker blogId={blog.id} />
       {blog.coverImage && (
         <div className="relative w-full aspect-5/2 mt-2 overflow-hidden">
@@ -92,7 +92,7 @@ const BlogContent = async ({ params }: BlogContentProps) => {
           ))}
         </div>
       )}
-      <div>
+      <div className="post-body">
         <BlogContentViewer content={blog.content} />
       </div>
       <Separator />
