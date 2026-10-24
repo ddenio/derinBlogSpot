@@ -35,7 +35,10 @@ const UserButton = () => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="cursor-pointer">
+      <DropdownMenuTrigger
+        aria-label="Account menu"
+        className="-m-1 p-1 cursor-pointer"
+      >
         <Avatar>
           <AvatarImage src={imageUrl} />
           <AvatarFallback className="border-2 border-slate-500 dark: border-slate-50">

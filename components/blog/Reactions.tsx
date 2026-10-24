@@ -42,9 +42,13 @@ const Reactions = ({ blog }: { blog: BlogWithUser }) => {
 
   return (
     <div className="flex items-center gap-4 w-full text-sm">
-      <span
+      {/* -my-2 -ml-2 + p-2 gives a 40px touch target without moving anything */}
+      <button
+        type="button"
         onClick={handleClap}
-        className="mr-4 flex items-center gap-1 cursor-pointer"
+        aria-label={userHasClapped ? "Remove clap" : "Clap for this post"}
+        aria-pressed={userHasClapped}
+        className="-my-2 -ml-2 mr-2 flex items-center gap-1 p-2 cursor-pointer"
       >
         {userHasClapped ? (
           <FaHandsClapping size={20} />
@@ -52,7 +56,7 @@ const Reactions = ({ blog }: { blog: BlogWithUser }) => {
           <PiHandsClapping size={20} />
         )}
         {clapCount}
-      </span>
+      </button>
       <span className="flex items-center gap-1 cursor-pointer">
         <FaRegComment size={18} />
         {blog._count.comments}
