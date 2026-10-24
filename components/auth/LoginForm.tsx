@@ -98,6 +98,12 @@ const LoginForm = () => {
           Forgot Password?
         </Link>
       </div>
+      <p className="mt-4 text-center text-sm text-muted-foreground">
+        New here?{" "}
+        <Link className="underline hover:text-foreground" href="/register">
+          Create an account
+        </Link>
+      </p>
     </form>
   );
 };

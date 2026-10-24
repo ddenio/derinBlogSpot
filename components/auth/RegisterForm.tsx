@@ -11,6 +11,7 @@ import LegalConsentNote from "../legal/LegalConsentNote";
 import { RegisterSchema, RegisterSchemaType } from "@/schemas/RegisterSchema";
 import { signUp } from "@/actions/auth/register";
 import { useState, useTransition } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 
@@ -115,6 +116,12 @@ const RegisterForm = () => {
       <div className="flex justify-center my-2">Or</div>
       <SocialAuth />
       <LegalConsentNote />
+      <p className="mt-4 text-center text-sm text-muted-foreground">
+        Already have an account?{" "}
+        <Link className="underline hover:text-foreground" href="/login">
+          Log in
+        </Link>
+      </p>
     </form>
   );
 };
