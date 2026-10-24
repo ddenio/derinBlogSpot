@@ -36,12 +36,13 @@ const BlogCard = async ({
           </Link>
         )}
       </div>
-      <div className="my-2 flex justify-between gap-6">
-        <div className="flex flex-col justify-between w-full">
+      {/* Phones: cover on top, text below. From `sm` up: text | cover | bookmark in a row. */}
+      <div className="my-2 flex flex-col gap-3 sm:flex-row sm:justify-between sm:gap-6">
+        <div className="flex min-w-0 flex-1 flex-col justify-between">
           <div className="flex items-center gap-3 flex-wrap">
             <Link
               href={`/blog/${blog.id}`}
-              className="text-xl sm:text-2xl font-bold"
+              className="min-w-0 text-xl sm:text-2xl font-bold wrap-anywhere"
             >
               {blog.title}
             </Link>
@@ -52,29 +53,35 @@ const BlogCard = async ({
             )}
           </div>
           {!!blog.tags.length && (
-            <div className="flex items-center gap-4 flex-wrap my-2">
+            <div className="flex items-center gap-2 sm:gap-4 flex-wrap my-2">
               {blog.tags.map((tag) => (
                 <Tag key={tag}>{tag}</Tag>
               ))}
             </div>
           )}
-          <Reactions blog={blog} />
+          <div className="flex items-center justify-between">
+            <Reactions blog={blog} />
+            {/* Phones keep the bookmark beside the reactions */}
+            <div className="sm:hidden">
+              <BookmarkButton blog={blog} />
+            </div>
+          </div>
         </div>
         {blog.coverImage && (
           <Link
             href={`/blog/${blog.id}`}
-            className="w-full max-w-40 h-25 relative overflow-hidden"
+            className="relative order-first aspect-5/2 w-full overflow-hidden sm:order-none sm:aspect-auto sm:h-25 sm:w-40 sm:shrink-0"
           >
             <Image
               src={blog.coverImage}
               fill
-              sizes="160px"
+              sizes="(max-width: 640px) 100vw, 160px"
               alt={blog.title}
               className="object-cover rounded-md"
             />
           </Link>
         )}
-        <div className="flex items-end">
+        <div className="hidden items-end sm:flex">
           <BookmarkButton blog={blog} />
         </div>
       </div>
