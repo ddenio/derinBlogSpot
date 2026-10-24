@@ -11,10 +11,13 @@ export interface UserSummaryProps {
 
 const UserSummary = ({ user, createdDate }: UserSummaryProps) => {
   return (
-    <Link href={`/user/${user.id}/1`} className="flex gap-2 items-center">
+    <Link
+      href={`/user/${user.id}/1`}
+      className="relative z-10 flex gap-2 items-center"
+    >
       <Avatar className="w-6 h-6">
         <AvatarImage src={user?.image || ""} />
-        <AvatarFallback className="border-2 border-slate-500 dark:border-slate-50">
+        <AvatarFallback className="border-2 border-border">
           <UserRound />
         </AvatarFallback>
       </Avatar>
