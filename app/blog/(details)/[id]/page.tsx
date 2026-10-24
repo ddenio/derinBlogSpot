@@ -84,7 +84,7 @@ const BlogContent = async ({ params }: BlogContentProps) => {
         </div>
         <Separator />
       </div>
-      <h2 className="text-4xl font-bold">{blog.title}</h2>
+      <h2 className="text-2xl sm:text-4xl font-bold break-words">{blog.title}</h2>
       {!!blog.tags.length && (
         <div className="flex items-center gap-4 flex-wrap">
           {blog.tags.map((tag) => (

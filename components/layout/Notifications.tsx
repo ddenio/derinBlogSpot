@@ -101,7 +101,10 @@ const Notifications = () => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="relative cursor-pointer">
+      <DropdownMenuTrigger
+        aria-label="Notifications"
+        className="relative -m-2 p-2 cursor-pointer"
+      >
         {!!unreadCount && (
           <div className="absolute bg-rose-500 h-6 w-6 rounded-full text-sm flex items-center justify-center bottom-2 left-2">
             <span>{unreadCount}</span>

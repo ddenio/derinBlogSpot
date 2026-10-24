@@ -11,7 +11,12 @@ const ThemeToggle = () => {
   };
 
   return (
-    <button onClick={toggleTheme} className="cursor-pointer">
+    <button
+      type="button"
+      onClick={toggleTheme}
+      aria-label="Toggle light or dark theme"
+      className="-m-2 p-2 cursor-pointer"
+    >
       <Sun className="hidden dark:block" />
       <Moon className="block dark:hidden" />
     </button>

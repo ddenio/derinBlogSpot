@@ -38,7 +38,7 @@ const BookmarkButton = ({
       onClick={handleBookmark}
       aria-label={userHasBookmarked ? "Remove bookmark" : "Bookmark this post"}
       aria-pressed={userHasBookmarked}
-      className="cursor-pointer"
+      className="-m-2 p-2 cursor-pointer"
     >
       {userHasBookmarked ? (
         <FaBookmark size={18} />
