@@ -15,10 +15,14 @@ const Reactions = ({ blog }: { blog: BlogWithUser }) => {
   const userId = session.data?.user.userId;
   const [clapCount, setClapCount] = useState(blog._count.claps);
   const [userHasClapped, setUserHasClapped] = useState(!!blog.claps.length);
+  // Bumped on each new clap so the icon replays its little "pop"
+  const [popCount, setPopCount] = useState(0);
   const router = useRouter();
 
   const handleClap = async () => {
     if (!userId) return;
+
+    if (!userHasClapped) setPopCount((count) => count + 1);
 
     setClapCount((prevCount) =>
       userHasClapped ? prevCount - 1 : prevCount + 1,
@@ -50,11 +54,18 @@ const Reactions = ({ blog }: { blog: BlogWithUser }) => {
         aria-pressed={userHasClapped}
         className="relative z-10 -my-2 -ml-2 mr-2 flex items-center gap-1 p-2 cursor-pointer"
       >
-        {userHasClapped ? (
-          <FaHandsClapping size={20} />
-        ) : (
-          <PiHandsClapping size={20} />
-        )}
+        <span
+          key={popCount}
+          className={
+            popCount ? "inline-flex motion-safe:animate-pop" : "inline-flex"
+          }
+        >
+          {userHasClapped ? (
+            <FaHandsClapping size={20} />
+          ) : (
+            <PiHandsClapping size={20} />
+          )}
+        </span>
         {clapCount}
       </button>
       <span className="flex items-center gap-1 cursor-pointer">
